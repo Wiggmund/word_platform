@@ -12,6 +12,7 @@ import com.example.wordPlatform.wordlist.WordlistService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,28 +34,57 @@ public class UserListWordService {
     UserEntity user = userService.getUserById(userId);
     WordlistEntity wordlist = wordlistService.getWordlistById(wordlistId);
 
-    Map<String, String> attributesValues = new HashMap<>();
+    /*
+    * Transforming dto attributes to get AttributeEntities
+    * */
+    Map<String, String> dtoAttrValues = new HashMap<>();
     dto.attributes()
-            .forEach(item -> attributesValues.put(item.name(), item.value()));
+            .forEach(item -> dtoAttrValues.put(item.name(), item.value()));
 
-    Map<String, String> receivedAttributesMap = dto.attributes().stream()
+    Map<String, String> dtoAttrNamesAndTypes = dto.attributes().stream()
             .collect(Collectors.toMap(
                     WordsAttributesEntryDto::name,
                     WordsAttributesEntryDto::type
             ));
-    List<AttributeEntity> attributes = attributeService.getAttributesIfExistOrCreate(receivedAttributesMap);
+    List<AttributeEntity> fetchedAttrEntities = attributeService.getAttributesIfExistOrCreate(dtoAttrNamesAndTypes);
 
-    Map<AttributeEntity, String> attributesWithValues = new HashMap<>();
-    attributes.forEach(attributeEntity ->
-            attributesWithValues.put(
+    /*
+    * We need to enforce attribute consistency for WordlistEntity,
+    * so that a new word cannot be added with new or incomplete attributes.
+    * All attributes of the WordlistEntity must be provided when adding a new word
+    * */
+    List<AttributeEntity> wordlistAttrs = wordlist.getAttributes();
+    int wordlistAttrsCount = wordlistAttrs.size();
+    int fetchedAttrsCount = fetchedAttrEntities.size();
+    if (wordlistAttrsCount == 0) {
+      fetchedAttrEntities.forEach(wordlist::addAttribute);
+    } else {
+      if (wordlistAttrsCount != fetchedAttrsCount)
+          throw new IllegalArgumentException("Illegal to add new columns to the word list");
+
+      List<String> unsupportedAttrs = fetchedAttrEntities.stream()
+              .filter(item -> !wordlistAttrs.contains(item))
+              .map(AttributeEntity::getName)
+              .toList();
+
+      if (!unsupportedAttrs.isEmpty())
+        throw new IllegalArgumentException(
+                "Wordlist doesn't have next columns: " +
+                String.join(", ", unsupportedAttrs)
+        );
+    }
+
+    Map<AttributeEntity, String> fetchedAttrEntitiesWithValues = new HashMap<>();
+    fetchedAttrEntities.forEach(attributeEntity ->
+            fetchedAttrEntitiesWithValues.put(
                     attributeEntity,
-                    attributesValues.get(attributeEntity.getName())));
+                    dtoAttrValues.get(attributeEntity.getName())));
 
     WordEntity createdWord = wordService.createWord(
             user,
             wordlist,
             dto,
-            attributesWithValues
+            fetchedAttrEntitiesWithValues
     );
     user.addWord(createdWord);
     wordlist.addWord(createdWord);
