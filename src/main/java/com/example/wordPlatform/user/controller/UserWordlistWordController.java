@@ -1,6 +1,7 @@
 package com.example.wordPlatform.user.controller;
 
-import com.example.wordPlatform.user.service.UserListWordService;
+import com.example.wordPlatform.user.service.UserWordlistWordService;
+import com.example.wordPlatform.word.WordEntity;
 import com.example.wordPlatform.word.dto.WordCreateDto;
 import com.example.wordPlatform.word.dto.WordResponseDto;
 import com.example.wordPlatform.word.service.WordResponseDtoMapper;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("api/v1/users/{userId}/wordlists/{wordlistId}/words")
 @AllArgsConstructor
 public class UserWordlistWordController {
-  private final UserListWordService userListWordService;
+  private final UserWordlistWordService userWordlistWordService;
   private final WordResponseDtoMapper wordResponseDtoMapper;
 
   @GetMapping
@@ -28,19 +29,19 @@ public class UserWordlistWordController {
           @PathVariable Long userId,
           @PathVariable Long wordlistId
   ) {
-    List<WordResponseDto> response = userListWordService.getAllWordlistWords(userId, wordlistId).stream()
+    List<WordResponseDto> response = userWordlistWordService.getAllWordlistWords(userId, wordlistId).stream()
             .map(wordResponseDtoMapper)
             .toList();
     return ResponseEntity.ok(response);
   }
 
   @PostMapping
-  public ResponseEntity<Long> createAndAddWord(
+  public ResponseEntity<WordResponseDto> createAndAddWord(
           @PathVariable Long userId,
           @PathVariable Long wordlistId,
           @RequestBody WordCreateDto dto
   ) {
-    Long createdWordId = userListWordService.createAndAddWord(userId, wordlistId, dto).getId();
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdWordId);
+    WordEntity createdWord = userWordlistWordService.createAndAddWord(userId, wordlistId, dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(wordResponseDtoMapper.apply(createdWord));
   }
 }

@@ -4,5 +4,5 @@ import java.util.List;
 
 public record WordCreateDto(
         String value,
-        List<WordsAttributesEntryDto> attributes
+        List<WordsAttributesCreateDto> attributes
 ) {}

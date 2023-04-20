@@ -1,6 +1,7 @@
 package com.example.wordPlatform.word.dto;
 
-public record WordsAttributesEntryDto (
+public record WordsAttributesResponseDto (
+        Long attributeId,
         String name,
         String type,
         String value

@@ -26,8 +26,6 @@ public class WordService {
           WordCreateDto dto,
           Map<AttributeEntity, String> wordAttributes
   ) {
-    duplicationCheckService.checkWordForValueAndList(dto.value(), wordlist);
-
     WordEntity newWord = new WordEntity(dto.value());
     newWord.setUser(user);
     newWord.setWordlist(wordlist);

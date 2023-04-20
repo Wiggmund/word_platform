@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -42,6 +44,23 @@ public class GlobalExceptionHandler {
             LocalDateTime.now(),
             status.value(),
             ex.getMessage()
+    );
+
+    return ResponseEntity.status(status).body(response);
+  }
+
+  @ExceptionHandler(IllegalAttributesException.class)
+  public ResponseEntity<ApiExceptionResponse> handleIllegalAttributesException(IllegalAttributesException ex) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+
+    Map<String, Object> body = new HashMap<>();
+    body.put("message", ex.getMessage());
+    body.put("attributes", ex.getAttributeNames());
+
+    ApiExceptionResponse response = new ApiExceptionResponse(
+            LocalDateTime.now(),
+            status.value(),
+            body
     );
 
     return ResponseEntity.status(status).body(response);

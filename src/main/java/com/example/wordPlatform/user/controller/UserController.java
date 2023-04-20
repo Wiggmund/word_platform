@@ -1,7 +1,9 @@
 package com.example.wordPlatform.user.controller;
 
+import com.example.wordPlatform.user.UserEntity;
 import com.example.wordPlatform.user.dto.UserCreateDto;
 import com.example.wordPlatform.user.dto.UserResponseDto;
+import com.example.wordPlatform.user.service.UserResponseDtoMapper;
 import com.example.wordPlatform.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,16 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class UserController {
   private final UserService userService;
+  private final UserResponseDtoMapper userResponseDtoMapper;
 
   @GetMapping("{userId}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
-    UserResponseDto user =  new UserResponseDto(userService.getUserById(userId));
-    return ResponseEntity.ok(user);
+    UserEntity user =  userService.getUserById(userId);
+    return ResponseEntity.ok(userResponseDtoMapper.apply(user));
   }
 
   @PostMapping
-  public ResponseEntity<Long> createUser(@RequestBody UserCreateDto dto) {
-    Long createdUserId = userService.createUser(dto).getId();
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdUserId);
+  public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto) {
+    UserEntity createdUser = userService.createUser(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDtoMapper.apply(createdUser));
   }
 }

@@ -1,13 +1,16 @@
 package com.example.wordPlatform.attribute;
 
 import com.example.wordPlatform.attribute.dto.AttributeCreateDto;
+import com.example.wordPlatform.exception.IllegalAttributesException;
 import com.example.wordPlatform.exception.notFound.AttributeNotFoundException;
 import com.example.wordPlatform.shared.DuplicationCheckService;
+import com.example.wordPlatform.word.dto.WordsAttributesCreateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -49,7 +52,21 @@ public class AttributeService {
     return attributeRepo.saveAll(newAttributes);
   }
 
-  public List<AttributeEntity> getAttributesIfExistOrCreate(Map<String, String> receivedAttributes) {
+  public List<AttributeEntity> getAttributesOrThrow(List<WordsAttributesCreateDto> wordAttributes) {
+    return getAttributes(wordAttributes, false);
+  }
+
+  public List<AttributeEntity> getAttributesOrCreate(List<WordsAttributesCreateDto> wordAttributes) {
+    return getAttributes(wordAttributes, true);
+  }
+
+  private List<AttributeEntity> getAttributes(List<WordsAttributesCreateDto> wordAttributes, boolean create) {
+    Map<String, String> receivedAttributes = wordAttributes.stream()
+            .collect(Collectors.toMap(
+                    WordsAttributesCreateDto::name,
+                    WordsAttributesCreateDto::type
+            ));
+
     List<String> receivedAttributeNames = receivedAttributes.keySet().stream().toList();
     List<AttributeEntity> foundedAttributes = attributeRepo.findAllByNameIn(receivedAttributeNames);
 
@@ -60,11 +77,24 @@ public class AttributeService {
               .filter(item -> item.getType().equalsIgnoreCase("base"))
               .count();
       long requiredBaseTypeCount = receivedAttributes.entrySet().stream()
-              .filter(item ->  item.getValue().equalsIgnoreCase("base"))
+              .filter(item -> item.getValue().equalsIgnoreCase("base"))
               .count();
 
-      if (foundedBaseTypeCount != requiredBaseTypeCount)
-        throw new AttributeNotFoundException();
+      if (foundedBaseTypeCount != requiredBaseTypeCount) {
+        List<String> nonExistentBaseAttributes = wordAttributes.stream()
+                .filter(item -> item.type().equalsIgnoreCase("base"))
+                .map(WordsAttributesCreateDto::name)
+                .filter(name -> !foundedAttributeNames.contains(name))
+                .toList();
+
+        throw new IllegalAttributesException(
+                "You provide nonexistent base type attributes",
+                nonExistentBaseAttributes
+        );
+      }
+
+      if (!create)
+        throw new IllegalArgumentException("Illegal to create new custom attributes");
 
       List<AttributeCreateDto> newCustomAttributeDtos = receivedAttributeNames.stream()
               .filter(name -> !foundedAttributeNames.contains(name))
