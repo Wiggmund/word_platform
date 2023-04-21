@@ -4,6 +4,7 @@ import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.wordlist.dto.WordlistCreateDto;
 import com.example.word_platform.wordlist.WordlistEntity;
 import com.example.word_platform.wordlist.WordlistService;
+import com.example.word_platform.wordlist.dto.WordlistUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,10 @@ public class UserWordlistService {
   public WordlistEntity getUserWordlistById(Long userId, Long wordlistId) {
     userService.getUserById(userId);
     return wordlistService.getWordlistById(wordlistId);
+  }
+
+  public WordlistEntity updateUserWordlist(Long userId, Long wordlistId, WordlistUpdateDto dto) {
+    userService.getUserById(userId);
+    return wordlistService.updateWordlist(wordlistId, dto);
   }
 }

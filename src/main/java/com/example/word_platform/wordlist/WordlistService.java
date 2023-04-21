@@ -6,6 +6,7 @@ import com.example.word_platform.exception.not_found.WordlistNotFoundException;
 import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.word.dto.WordsAttributesCreateDto;
 import com.example.word_platform.wordlist.dto.WordlistCreateDto;
+import com.example.word_platform.wordlist.dto.WordlistUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -91,5 +92,14 @@ public class WordlistService {
               "You didn't provide these attributes",
               unProvidedAttributes
       );
+  }
+
+  public WordlistEntity updateWordlist(Long wordlistId, WordlistUpdateDto dto) {
+    WordlistEntity candidate = getWordlistById(wordlistId);
+
+    candidate.setTitle(dto.title());
+    candidate.setDescription(dto.description());
+
+    return wordlistRepo.save(candidate);
   }
 }
