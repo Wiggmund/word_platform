@@ -8,11 +8,17 @@ import com.example.word_platform.user.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class UserService {
   private final UserRepo userRepo;
   private final DuplicationCheckService duplicationCheckService;
+
+  public List<UserEntity> getAllUsers() {
+    return userRepo.findAll();
+  }
 
   public UserEntity getUserById(Long userId) {
     return userRepo.findById(userId)

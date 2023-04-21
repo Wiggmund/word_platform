@@ -15,12 +15,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/users")
 @AllArgsConstructor
 public class UserController {
   private final UserService userService;
   private final UserResponseDtoMapper userResponseDtoMapper;
+
+  @GetMapping
+  public ResponseEntity<List<UserResponseDto>> getAllUsers() {
+    List<UserResponseDto> users =  userService.getAllUsers().stream()
+            .map(userResponseDtoMapper)
+            .toList();
+
+    return ResponseEntity.ok(users);
+  }
 
   @GetMapping("{userId}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
