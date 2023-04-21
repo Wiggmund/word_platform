@@ -23,6 +23,14 @@ public class WordService {
     return wordRepo.findById(wordId).orElseThrow(WordNotFoundException::new);
   }
 
+  public List<WordEntity> getAllWordsByListWithAttributes(WordlistEntity wordlist) {
+    return wordRepo.findAllByListWithAttributes(wordlist);
+  }
+
+  public List<WordEntity> getAllWordsByUser(UserEntity user) {
+    return wordRepo.findAllByUser(user);
+  }
+
   public WordEntity createWord(
           UserEntity user,
           WordlistEntity wordlist,
@@ -35,10 +43,6 @@ public class WordService {
     return wordRepo.save(
             wordsAttributesService.addAttributes(newWord, wordAttributes)
     );
-  }
-
-  public List<WordEntity> getAllWordsByListWithAttributes(WordlistEntity wordlist) {
-    return wordRepo.findAllByListWithAttributes(wordlist);
   }
 
   public WordEntity updateWord(Long wordId, WordUpdateDto dto) {

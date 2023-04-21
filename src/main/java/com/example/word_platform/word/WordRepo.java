@@ -1,5 +1,6 @@
 package com.example.word_platform.word;
 
+import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.wordlist.WordlistEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,6 @@ public interface WordRepo extends JpaRepository<WordEntity, Long> {
           "LEFT JOIN FETCH wordsAttrs.attribute attr " +
           "WHERE word.wordlist = :wordlist")
   List<WordEntity> findAllByListWithAttributes(@Param("wordlist") WordlistEntity wordlist);
+
+  List<WordEntity> findAllByUser(UserEntity user);
 }
