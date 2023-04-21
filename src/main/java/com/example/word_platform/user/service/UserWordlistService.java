@@ -20,6 +20,11 @@ public class UserWordlistService {
     return wordlistService.getAllWordlistsByUser(user);
   }
 
+  public WordlistEntity getUserWordlistById(Long userId, Long wordlistId) {
+    userService.getUserById(userId);
+    return wordlistService.getWordlistById(wordlistId);
+  }
+
   public WordlistEntity createUserWorldlist(Long userId, WordlistCreateDto dto) {
     UserEntity user = userService.getUserById(userId);
 
@@ -30,13 +35,15 @@ public class UserWordlistService {
     return newWordlist;
   }
 
-  public WordlistEntity getUserWordlistById(Long userId, Long wordlistId) {
-    userService.getUserById(userId);
-    return wordlistService.getWordlistById(wordlistId);
+  public WordlistEntity updateUserWordlist(Long userId, Long wordlistId, WordlistUpdateDto dto) {
+    UserEntity user = userService.getUserById(userId);
+    wordlistService.getWordlistByIdAndUser(wordlistId, user);
+    return wordlistService.updateWordlist(wordlistId, dto);
   }
 
-  public WordlistEntity updateUserWordlist(Long userId, Long wordlistId, WordlistUpdateDto dto) {
-    userService.getUserById(userId);
-    return wordlistService.updateWordlist(wordlistId, dto);
+  public WordlistEntity removeUserWordlist(Long userId, Long wordlistId) {
+    UserEntity user = userService.getUserById(userId);
+    wordlistService.getWordlistByIdAndUser(wordlistId, user);
+    return wordlistService.removeWordlist(wordlistId);
   }
 }

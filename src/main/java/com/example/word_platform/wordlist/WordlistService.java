@@ -3,6 +3,7 @@ package com.example.word_platform.wordlist;
 import com.example.word_platform.attribute.AttributeEntity;
 import com.example.word_platform.exception.IllegalAttributesException;
 import com.example.word_platform.exception.not_found.WordlistNotFoundException;
+import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.word.dto.WordsAttributesCreateDto;
 import com.example.word_platform.wordlist.dto.WordlistCreateDto;
@@ -16,6 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 public class WordlistService {
   private final WordlistRepo wordlistRepo;
+  private final DuplicationCheckService duplicationCheckService;
+
+  public List<WordlistEntity> getAllWordlists() {
+    return wordlistRepo.findAll();
+  }
 
   public WordlistEntity getWordlistById(Long wordlistId) {
     return wordlistRepo.findById(wordlistId)
@@ -26,14 +32,40 @@ public class WordlistService {
     return wordlistRepo.findAllByUser(user);
   }
 
+  public WordlistEntity getWordlistByIdAndUser(Long wordlistId, UserEntity user) {
+    return wordlistRepo.findByIdAndUser(wordlistId, user)
+            .orElseThrow(WordlistNotFoundException::new);
+  }
+
   public WordlistEntity createWordlist(
           UserEntity user,
           WordlistCreateDto dto
   ) {
+    duplicationCheckService.checkWordlistForTitle(dto.title());
     WordlistEntity newWordlist = new WordlistEntity(dto.title(), dto.description());
     newWordlist.setUser(user);
 
     return wordlistRepo.save(newWordlist);
+  }
+
+  public WordlistEntity updateWordlist(Long wordlistId, WordlistUpdateDto dto) {
+    WordlistEntity candidate = getWordlistById(wordlistId);
+    WordlistUpdateDto candidateDto = new WordlistUpdateDto(candidate.getTitle(), candidate.getDescription());
+
+    if (candidateDto.equals(dto)) return candidate;
+
+    duplicationCheckService.checkWordlistForTitle(dto.title());
+
+    candidate.setTitle(dto.title());
+    candidate.setDescription(dto.description());
+
+    return wordlistRepo.save(candidate);
+  }
+
+  public WordlistEntity removeWordlist(Long wordlistId) {
+    WordlistEntity candidate = getWordlistById(wordlistId);
+    wordlistRepo.delete(candidate);
+    return candidate;
   }
 
   public WordlistEntity save(WordlistEntity wordlist) {
@@ -92,14 +124,5 @@ public class WordlistService {
               "You didn't provide these attributes",
               unProvidedAttributes
       );
-  }
-
-  public WordlistEntity updateWordlist(Long wordlistId, WordlistUpdateDto dto) {
-    WordlistEntity candidate = getWordlistById(wordlistId);
-
-    candidate.setTitle(dto.title());
-    candidate.setDescription(dto.description());
-
-    return wordlistRepo.save(candidate);
   }
 }

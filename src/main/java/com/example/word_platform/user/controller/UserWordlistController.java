@@ -8,6 +8,7 @@ import com.example.word_platform.wordlist.dto.WordlistUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,7 @@ public class UserWordlistController {
   public ResponseEntity<WordlistResponseDto> createUserWorldlist(
           @PathVariable Long userId,
           @RequestBody WordlistCreateDto dto
-          ) {
+  ) {
     WordlistEntity createdWordlist = userWordlistService.createUserWorldlist(userId, dto);
     return ResponseEntity.status(HttpStatus.CREATED).body(new WordlistResponseDto(createdWordlist));
   }
@@ -62,5 +63,14 @@ public class UserWordlistController {
   ) {
     WordlistEntity updatedWordlist = userWordlistService.updateUserWordlist(userId, wordlistId, dto);
     return ResponseEntity.ok(new WordlistResponseDto(updatedWordlist));
+  }
+
+  @DeleteMapping("{wordlistId}")
+  public ResponseEntity<WordlistResponseDto> removeUserWordlist(
+          @PathVariable Long userId,
+          @PathVariable Long wordlistId
+  ) {
+    WordlistEntity removedWordlist = userWordlistService.removeUserWordlist(userId, wordlistId);
+    return ResponseEntity.ok(new WordlistResponseDto(removedWordlist));
   }
 }

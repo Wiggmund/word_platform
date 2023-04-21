@@ -4,8 +4,10 @@ import com.example.word_platform.attribute.AttributeEntity;
 import com.example.word_platform.attribute.AttributeRepo;
 import com.example.word_platform.exception.already_exist.AttributeAlreadyExistsException;
 import com.example.word_platform.exception.already_exist.UserAlreadyExistsException;
+import com.example.word_platform.exception.already_exist.WordlistAlreadyExistsException;
 import com.example.word_platform.user.UserRepo;
 import com.example.word_platform.word.WordRepo;
+import com.example.word_platform.wordlist.WordlistRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +18,9 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class DuplicationCheckService {
-  private final WordRepo wordRepo;
   private final UserRepo userRepo;
   private final AttributeRepo attributeRepo;
+  private final WordlistRepo wordlistRepo;
 
   public void checkAttributeForName(String name) {
     attributeRepo.findByName(name)
@@ -39,6 +41,13 @@ public class DuplicationCheckService {
               duplicationCheck.put("email", existed.getEmail().equals(email));
 
               throw new UserAlreadyExistsException(getDuplicatedFields(duplicationCheck));
+            });
+  }
+
+  public void checkWordlistForTitle(String title) {
+    wordlistRepo.findByTitle(title)
+            .ifPresent(existed -> {
+              throw new WordlistAlreadyExistsException(List.of("title"));
             });
   }
 

@@ -3,6 +3,7 @@ package com.example.word_platform.wordlist;
 import com.example.word_platform.attribute.AttributeEntity;
 import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.word.WordEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,14 +31,14 @@ public class WordlistEntity {
   private String title;
   private String description;
 
-  @OneToMany(mappedBy = "wordlist")
+  @OneToMany(mappedBy = "wordlist", cascade = CascadeType.ALL)
   private List<WordEntity> words = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "user_id")
   private UserEntity user;
 
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
           name = "wordlists_attributes",
           joinColumns = @JoinColumn(name = "wordlist_id"),
