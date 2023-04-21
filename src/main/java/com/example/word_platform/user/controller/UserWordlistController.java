@@ -34,6 +34,15 @@ public class UserWordlistController {
     return ResponseEntity.ok(fetchedWordlists);
   }
 
+  @GetMapping("{wordlistId}")
+  public ResponseEntity<WordlistResponseDto> getUserWordlistById(
+          @PathVariable Long userId,
+          @PathVariable Long wordlistId
+  ) {
+    WordlistEntity wordlist = userWordlistService.getUserWordlistById(userId, wordlistId);
+    return ResponseEntity.ok(new WordlistResponseDto(wordlist));
+  }
+
   @PostMapping
   public ResponseEntity<WordlistResponseDto> createUserWorldlist(
           @PathVariable Long userId,

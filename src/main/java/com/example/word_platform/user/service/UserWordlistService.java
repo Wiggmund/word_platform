@@ -28,4 +28,9 @@ public class UserWordlistService {
 
     return newWordlist;
   }
+
+  public WordlistEntity getUserWordlistById(Long userId, Long wordlistId) {
+    userService.getUserById(userId);
+    return wordlistService.getWordlistById(wordlistId);
+  }
 }
