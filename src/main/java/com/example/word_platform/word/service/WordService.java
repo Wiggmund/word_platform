@@ -19,6 +19,10 @@ public class WordService {
   private final WordRepo wordRepo;
   private final WordsAttributesService wordsAttributesService;
 
+  public List<WordEntity> getAllWords() {
+    return wordRepo.findAll();
+  }
+
   public WordEntity getWordById(Long wordId) {
     return wordRepo.findById(wordId).orElseThrow(WordNotFoundException::new);
   }
