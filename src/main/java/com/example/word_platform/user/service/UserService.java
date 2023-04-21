@@ -5,6 +5,7 @@ import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.user.dto.UserCreateDto;
 import com.example.word_platform.user.UserEntity;
 import com.example.word_platform.user.UserRepo;
+import com.example.word_platform.user.dto.UserUpdateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,19 @@ public class UserService {
 
   public UserEntity save(UserEntity user) {
     return userRepo.save(user);
+  }
+
+  public UserEntity updateUser(Long userId, UserUpdateDto dto) {
+    UserEntity candidate = getUserById(userId);
+    UserUpdateDto candidateDto = new UserUpdateDto(candidate.getUsername(), candidate.getEmail());
+
+    if (candidateDto.equals(dto)) return candidate;
+
+    duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
+
+    candidate.setUsername(dto.username());
+    candidate.setEmail(dto.email());
+
+    return userRepo.save(candidate);
   }
 }
