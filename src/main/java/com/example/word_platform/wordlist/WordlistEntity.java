@@ -31,7 +31,7 @@ public class WordlistEntity {
   private String title;
   private String description;
 
-  @OneToMany(mappedBy = "wordlist", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "wordlist")
   private List<WordEntity> words = new ArrayList<>();
 
   @ManyToOne

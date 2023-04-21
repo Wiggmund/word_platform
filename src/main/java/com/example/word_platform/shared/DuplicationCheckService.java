@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -34,14 +36,36 @@ public class DuplicationCheckService {
       throw new AttributeAlreadyExistsException(List.of("name"));
   }
   public void checkUserForUsernameAndEmail(String username, String email) {
-    userRepo.findByUsernameOrEmail(username, email)
-            .ifPresent(existed -> {
-              Map<String, Boolean> duplicationCheck = new HashMap<>();
-              duplicationCheck.put("username", existed.getUsername().equals(username));
-              duplicationCheck.put("email", existed.getEmail().equals(email));
+    Optional<String> optUsername = Optional.ofNullable(username);
+    Optional<String> optEmail = Optional.ofNullable(email);
 
-              throw new UserAlreadyExistsException(getDuplicatedFields(duplicationCheck));
-            });
+    if (optUsername.isPresent() && optEmail.isPresent()) {
+      userRepo.findByUsernameOrEmail(username, email)
+              .ifPresent(existed -> {
+                Map<String, Boolean> duplicationCheck = new HashMap<>();
+                duplicationCheck.put("username", existed.getUsername().equals(username));
+                duplicationCheck.put("email", existed.getEmail().equals(email));
+
+                throw new UserAlreadyExistsException(getDuplicatedFields(duplicationCheck));
+              });
+
+      return;
+    }
+
+    if(optUsername.isPresent()) {
+      userRepo.findByUsername(optUsername.get())
+              .ifPresent(existed -> {
+                throw new UserAlreadyExistsException(List.of("username"));
+              });
+
+      return;
+    }
+
+    if(optEmail.isPresent())
+      userRepo.findByEmail(optEmail.get())
+              .ifPresent(existed -> {
+                throw new UserAlreadyExistsException(List.of("email"));
+              });
   }
 
   public void checkWordlistForTitle(String title) {

@@ -39,15 +39,32 @@ public class UserService {
 
   public UserEntity updateUser(Long userId, UserUpdateDto dto) {
     UserEntity candidate = getUserById(userId);
-    UserUpdateDto candidateDto = new UserUpdateDto(candidate.getUsername(), candidate.getEmail());
 
-    if (candidateDto.equals(dto)) return candidate;
+    boolean isUsernameTheSame = candidate.getUsername().equalsIgnoreCase(dto.username());
+    boolean isEmailTheSame = candidate.getEmail().equalsIgnoreCase(dto.email());
 
-    duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
+    if (isUsernameTheSame && isEmailTheSame) return candidate;
+
+    if (!isUsernameTheSame && !isEmailTheSame)
+      duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
+
+    if(!isUsernameTheSame)
+      duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), null);
+
+    if(!isEmailTheSame)
+      duplicationCheckService.checkUserForUsernameAndEmail(null, dto.email());
 
     candidate.setUsername(dto.username());
     candidate.setEmail(dto.email());
 
     return userRepo.save(candidate);
+  }
+
+  public UserEntity removeUser(Long userId) {
+    UserEntity candidate = getUserById(userId);
+    candidate.getWordlists().forEach(wordlist -> wordlist.getWords().forEach(word -> word.setWordlist(null)));
+    candidate.getWords().forEach(word -> word.setUser(null));
+    userRepo.delete(candidate);
+    return candidate;
   }
 }

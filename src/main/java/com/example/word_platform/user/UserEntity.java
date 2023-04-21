@@ -2,6 +2,7 @@ package com.example.word_platform.user;
 
 import com.example.word_platform.word.WordEntity;
 import com.example.word_platform.wordlist.WordlistEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class UserEntity {
   private String username;
   private String email;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WordlistEntity> wordlists = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
