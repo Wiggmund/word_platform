@@ -103,6 +103,8 @@ public class WordlistService {
           Wordlist wordlist,
           List<WordsAttributesCreateDto> wordsAttributesCreateDtos
   ) {
+    checkIfWordlistSupportAttributes(wordlist, wordsAttributesCreateDtos);
+
     List<Attribute> wordlistAttributes = wordlist.getAttributes();
     long wordlistAttributesCount = wordlistAttributes.size();
     long attributeDtosCount = wordsAttributesCreateDtos.size();
@@ -110,7 +112,8 @@ public class WordlistService {
     if (wordlistAttributes.isEmpty()) return;
 
     if (attributeDtosCount >= wordlistAttributesCount)
-      checkIfWordlistSupportAttributes(wordlist, wordsAttributesCreateDtos);
+      throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
+              + wordlistAttributesCount + "] but you provide [" + attributeDtosCount + "]");
 
     List<String> dtoAttributeNames = wordsAttributesCreateDtos.stream()
             .map(WordsAttributesCreateDto::name)
