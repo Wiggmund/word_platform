@@ -1,13 +1,12 @@
 package com.example.word_platform.shared;
 
-import com.example.word_platform.attribute.AttributeEntity;
-import com.example.word_platform.attribute.AttributeRepo;
+import com.example.word_platform.model.Attribute;
+import com.example.word_platform.repository.AttributeRepo;
 import com.example.word_platform.exception.already_exist.AttributeAlreadyExistsException;
 import com.example.word_platform.exception.already_exist.UserAlreadyExistsException;
 import com.example.word_platform.exception.already_exist.WordlistAlreadyExistsException;
-import com.example.word_platform.user.UserRepo;
-import com.example.word_platform.word.WordRepo;
-import com.example.word_platform.wordlist.WordlistRepo;
+import com.example.word_platform.repository.UserRepo;
+import com.example.word_platform.repository.WordlistRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +29,7 @@ public class DuplicationCheckService {
             });
   }
   public void checkAttributesForName(List<String> names) {
-    List<AttributeEntity> attributes = attributeRepo.findAllByNameIn(names);
+    List<Attribute> attributes = attributeRepo.findAllByNameIn(names);
     if (!attributes.isEmpty())
       throw new AttributeAlreadyExistsException(List.of("name"));
   }
