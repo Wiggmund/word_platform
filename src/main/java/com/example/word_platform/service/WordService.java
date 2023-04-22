@@ -1,7 +1,7 @@
 package com.example.word_platform.service;
 
 import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
-import com.example.word_platform.exception.not_found.WordNotFoundException;
+import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.User;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.WordRepo;
@@ -24,7 +24,8 @@ public class WordService {
   }
 
   public Word getWordById(Long wordId) {
-    return wordRepo.findById(wordId).orElseThrow(WordNotFoundException::new);
+    return wordRepo.findById(wordId).orElseThrow(() ->
+            new ResourceNotFoundException("Word with id [" + wordId + "] not found"));
   }
 
   public List<Word> getAllWordsByListWithAttributes(Wordlist wordlist) {

@@ -1,10 +1,9 @@
 package com.example.word_platform.service;
 
+import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.repository.AttributeRepo;
 import com.example.word_platform.dto.attribute.AttributeCreateDto;
-import com.example.word_platform.exception.IllegalAttributesException;
-import com.example.word_platform.exception.not_found.AttributeNotFoundException;
 import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import lombok.AllArgsConstructor;
@@ -20,11 +19,6 @@ public class AttributeService {
 
   public List<Attribute> getAllAttributes() {
     return attributeRepo.findAll();
-  }
-
-  public Attribute getAttributeByName(String name) {
-    return attributeRepo.findByName(name)
-            .orElseThrow(AttributeNotFoundException::new);
   }
 
   public Attribute createAttribute(AttributeCreateDto dto) {
@@ -104,10 +98,7 @@ public class AttributeService {
             .toList();
 
     if(!nonExistentBaseAttributes.isEmpty())
-      throw new IllegalAttributesException(
-              "Following base attributes don't exist",
-              nonExistentBaseAttributes
-      );
+      throw new ResourceNotFoundException("Base attributes [" + String.join(", ", nonExistentBaseAttributes) + "] don't exist");
   }
   private List<Attribute> createCustomAttributes(
           List<WordsAttributesCreateDto> wordsAttributesCreateDtos,

@@ -1,8 +1,8 @@
 package com.example.word_platform.service;
 
+import com.example.word_platform.exception.ResourceNotFoundException;
+import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.exception.IllegalAttributesException;
-import com.example.word_platform.exception.not_found.WordlistNotFoundException;
 import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.model.User;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
@@ -26,8 +26,8 @@ public class WordlistService {
   }
 
   public Wordlist getWordlistById(Long wordlistId) {
-    return wordlistRepo.findById(wordlistId)
-            .orElseThrow(WordlistNotFoundException::new);
+    return wordlistRepo.findById(wordlistId).orElseThrow(() ->
+            new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] not found"));
   }
 
   public List<Wordlist> getAllWordlistsByUser(User user) {
@@ -35,8 +35,9 @@ public class WordlistService {
   }
 
   public Wordlist getWordlistByIdAndUser(Long wordlistId, User user) {
-    return wordlistRepo.findByIdAndUser(wordlistId, user)
-            .orElseThrow(WordlistNotFoundException::new);
+    return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
+            new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] " +
+                    "for user with id [" + user.getId() + "] not found"));
   }
 
   public Wordlist createWordlist(
@@ -94,10 +95,8 @@ public class WordlistService {
             .toList();
 
     if (!unSupportedAttributes.isEmpty())
-      throw new IllegalAttributesException(
-              "Current wordlist doesn't support these attributes",
-              unSupportedAttributes
-      );
+      throw new WordlistAttributesException("Wordlist with id [" + wordlist.getId() + "] " +
+              "doesn't support [" + String.join(", ", unSupportedAttributes) + "] attributes");
   }
 
   public void checkIfAllAttributesProvided(
@@ -122,9 +121,7 @@ public class WordlistService {
             .toList();
 
     if (!unProvidedAttributes.isEmpty())
-      throw new IllegalAttributesException(
-              "You didn't provide these attributes",
-              unProvidedAttributes
-      );
+      throw new WordlistAttributesException("You didn't provide [" + String.join(", ", unProvidedAttributes) +
+              "] attributes for wordlist with id [" + wordlist.getId() + "]");
   }
 }

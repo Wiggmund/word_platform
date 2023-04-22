@@ -1,6 +1,6 @@
 package com.example.word_platform.service.user;
 
-import com.example.word_platform.exception.not_found.UserNotFoundException;
+import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.model.User;
@@ -22,8 +22,8 @@ public class UserService {
   }
 
   public User getUserById(Long userId) {
-    return userRepo.findById(userId)
-            .orElseThrow(UserNotFoundException::new);
+    return userRepo.findById(userId).orElseThrow(() ->
+            new ResourceNotFoundException("User with id [" + userId + "] not found"));
   }
 
   public User createUser(UserCreateDto dto) {

@@ -1,68 +1,53 @@
 package com.example.word_platform.exception;
 
-import com.example.word_platform.exception.already_exist.ResourceAlreadyExistsException;
-import com.example.word_platform.exception.not_found.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+  private ApiExceptionResponse buildApiExceptionResponse(Object message, HttpStatus status) {
+    return new ApiExceptionResponse(
+            LocalDateTime.now(),
+            status.value(),
+            message
+    );
+  }
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ApiExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
     HttpStatus status = HttpStatus.NOT_FOUND;
-    ApiExceptionResponse response = new ApiExceptionResponse(
-            LocalDateTime.now(),
-            status.value(),
-            ex.getMessage()
-    );
-
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }
 
   @ExceptionHandler(ResourceAlreadyExistsException.class)
   public ResponseEntity<ApiExceptionResponse> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    ApiExceptionResponse response = new ApiExceptionResponse(
-            LocalDateTime.now(),
-            status.value(),
-            ex.getMessage()
-    );
-
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<ApiExceptionResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    ApiExceptionResponse response = new ApiExceptionResponse(
-            LocalDateTime.now(),
-            status.value(),
-            ex.getMessage()
-    );
-
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }
 
-  @ExceptionHandler(IllegalAttributesException.class)
-  public ResponseEntity<ApiExceptionResponse> handleIllegalAttributesException(IllegalAttributesException ex) {
+  @ExceptionHandler(WordlistAttributesException.class)
+  public ResponseEntity<ApiExceptionResponse> handleWordlistAttributesException(WordlistAttributesException ex) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
+    return ResponseEntity.status(status).body(response);
+  }
 
-    Map<String, Object> body = new HashMap<>();
-    body.put("message", ex.getMessage());
-    body.put("attributes", ex.getAttributeNames());
-
-    ApiExceptionResponse response = new ApiExceptionResponse(
-            LocalDateTime.now(),
-            status.value(),
-            body
-    );
-
+  @ExceptionHandler(IllegalStateException.class)
+  public ResponseEntity<ApiExceptionResponse> handleIllegalStateException(IllegalStateException ex) {
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }
 }
