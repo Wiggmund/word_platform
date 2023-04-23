@@ -111,7 +111,7 @@ public class WordlistService {
 
     if (wordlistAttributes.isEmpty()) return;
 
-    if (attributeDtosCount >= wordlistAttributesCount)
+    if (attributeDtosCount > wordlistAttributesCount)
       throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
               + wordlistAttributesCount + "] but you provide [" + attributeDtosCount + "]");
 

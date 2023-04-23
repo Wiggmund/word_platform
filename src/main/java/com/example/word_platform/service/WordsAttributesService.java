@@ -4,7 +4,6 @@ import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.model.word.WordsAttributes;
 import com.example.word_platform.repository.WordsAttributesRepo;
-import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +16,28 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class WordsAttributesService {
   private final WordsAttributesRepo wordsAttributesRepo;
-  private final AttributeService attributeService;
 
-  public Word updateAttributes(Word word, List<WordsAttributesCreateDto> attributeDtos) {
-    attributeService.getAttributesFromOrThrow(attributeDtos);
+  public Word updateAttributes(Word word, AttributeWithValuesDto receivedAttributesWithValues) {
+    Map<String, String> receivedAttributeNamesAndValues = receivedAttributesWithValues.getAttributes().entrySet().stream()
+            .collect(Collectors.toMap(
+                    entry -> entry.getKey().getName(),
+                    Map.Entry::getValue
+            ));
+    Set<String> receivedAttributeNames = receivedAttributeNamesAndValues.keySet();
 
-    Map<String, String> attributeDtoNamesAndValues = attributeDtos.stream().collect(Collectors.toMap(
-            WordsAttributesCreateDto::name,
-            WordsAttributesCreateDto::value
-    ));
-    Set<String> attributeDtoNames = attributeDtoNamesAndValues.keySet();
+    List<WordsAttributes> fetchedAttributes = wordsAttributesRepo.findAllByWord(word);
+    fetchedAttributes.stream()
+            .filter(entry -> {
+              String oldAttributeName = entry.getAttribute().getName();
+              return receivedAttributeNames.contains(oldAttributeName);
+            })
+            .forEach(entry -> {
+              String oldAttributeName = entry.getAttribute().getName();
+              String newAttributeValue = receivedAttributeNamesAndValues.get(oldAttributeName);
+              entry.setValue(newAttributeValue);
+            });
 
-    List<WordsAttributes> oldAttributes = wordsAttributesRepo.findAllByWord(word);
-    oldAttributes.stream()
-            .filter(entry -> attributeDtoNames.contains(entry.getAttribute().getName()))
-            .forEach(entry -> entry.setValue(attributeDtoNamesAndValues.get(entry.getAttribute().getName())));
-
-    wordsAttributesRepo.saveAll(oldAttributes);
+    wordsAttributesRepo.saveAll(fetchedAttributes);
 
     return word;
   }

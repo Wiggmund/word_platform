@@ -1,14 +1,19 @@
 package com.example.word_platform.shared;
 
+import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
 import com.example.word_platform.exception.ResourceAlreadyExistsException;
 import com.example.word_platform.model.Attribute;
+import com.example.word_platform.model.Wordlist;
+import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.AttributeRepo;
 import com.example.word_platform.repository.UserRepo;
+import com.example.word_platform.repository.WordRepo;
 import com.example.word_platform.repository.WordlistRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,6 +22,7 @@ public class DuplicationCheckService {
   private final UserRepo userRepo;
   private final AttributeRepo attributeRepo;
   private final WordlistRepo wordlistRepo;
+  private final WordRepo wordRepo;
   private static final String EXCEPTION_MSG = "already exists";
 
 
@@ -72,5 +78,31 @@ public class DuplicationCheckService {
               throw new ResourceAlreadyExistsException(
                       "Wordlist with title [" + title + "] " + EXCEPTION_MSG);
             });
+  }
+
+  public void checkWordForAttributeValues(String wordValue, AttributeWithValuesDto wordAttributes, Wordlist wordlist) {
+    Map<Attribute, String> attributes = wordAttributes.getAttributes();
+
+    Optional<Word> candidate = wordRepo.findByWordlistAndValueAndAttributeValues(
+            wordValue,
+            wordlist,
+            attributes.values().stream().toList()
+    );
+    if(candidate.isEmpty()) return;
+
+    StringBuilder stringBuilder = new StringBuilder();
+    String duplicatedAttributes = attributes.entrySet().stream().reduce(
+            stringBuilder,
+            (sb, entry) -> sb
+                    .append(entry.getKey().getName())
+                    .append("=")
+                    .append(entry.getValue()),
+            (sb1, sb2) -> sb1
+                    .append(", ")
+                    .append(sb2.toString())
+    ).toString();
+
+    throw new ResourceAlreadyExistsException("Word [" + wordValue + "] " +
+            "with attributes [" + duplicatedAttributes + "] " + EXCEPTION_MSG);
   }
 }

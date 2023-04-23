@@ -25,6 +25,10 @@ public class AttributeWithValuesDto {
     ));
   }
 
+  public AttributeWithValuesDto(Map<Attribute, String> attributes) {
+    this.attributes = attributes;
+  }
+
   public Map<Attribute, String> getAttributes() {
     return attributes;
   }
