@@ -32,6 +32,9 @@ public class Wordlist {
   @OneToMany(mappedBy = "wordlist")
   private List<Word> words = new ArrayList<>();
 
+  @OneToMany(mappedBy = "wordlist")
+  private List<Question> questions = new ArrayList<>();
+
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
@@ -67,5 +70,15 @@ public class Wordlist {
   public void removeAttribute(Attribute attribute) {
     attributes.remove(attribute);
     attribute.getWordlists().remove(this);
+  }
+
+  public void addQuestion(Question question) {
+    questions.add(question);
+    question.setWordlist(this);
+  }
+
+  public void removeQuestion(Question question) {
+    questions.remove(question);
+    question.setWordlist(null);
   }
 }

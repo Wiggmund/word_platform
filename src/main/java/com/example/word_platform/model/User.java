@@ -31,6 +31,9 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<Word> words = new ArrayList<>();
 
+  @OneToMany(mappedBy = "user")
+  private List<Question> questions = new ArrayList<>();
+
   public User(String username, String email) {
     this.username = username;
     this.email = email;
@@ -54,5 +57,15 @@ public class User {
   public void removeWordlist(Wordlist wordlist) {
     wordlists.remove(wordlist);
     wordlist.setUser(null);
+  }
+
+  public void addQuestion(Question question) {
+    questions.add(question);
+    question.setUser(this);
+  }
+
+  public void removeQuestion(Question question) {
+    questions.remove(question);
+    question.setUser(null);
   }
 }

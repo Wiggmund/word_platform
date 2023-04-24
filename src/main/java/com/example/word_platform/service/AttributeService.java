@@ -21,6 +21,11 @@ public class AttributeService {
     return attributeRepo.findAll();
   }
 
+  public Attribute getAttributeById(Long attributeId) {
+    return attributeRepo.findById(attributeId).orElseThrow(() ->
+            new ResourceNotFoundException("Attribute with id [" + attributeId + "] not found"));
+  }
+
   public Attribute createAttribute(AttributeCreateDto dto) {
     duplicationCheckService.checkAttributeForName(dto.name());
     Attribute newAttribute = new Attribute(dto.name(), dto.type());

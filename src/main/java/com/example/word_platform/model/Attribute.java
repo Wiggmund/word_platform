@@ -29,6 +29,9 @@ public class Attribute {
   @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WordsAttributes> words = new ArrayList<>();
 
+  @OneToMany(mappedBy = "answer")
+  private List<Question> questions = new ArrayList<>();
+
   @ManyToMany(mappedBy = "attributes")
   private List<Wordlist> wordlists = new ArrayList<>();
 
