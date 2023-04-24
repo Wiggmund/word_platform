@@ -3,6 +3,7 @@ package com.example.word_platform.controller;
 import com.example.word_platform.service.AttributeService;
 import com.example.word_platform.dto.attribute.AttributeCreateDto;
 import com.example.word_platform.dto.attribute.AttributeResponseDto;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,12 @@ import java.util.List;
 @AllArgsConstructor
 public class AttributeController {
   private final AttributeService attributeService;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<AttributeResponseDto>> getAllAttributes() {
     List<AttributeResponseDto> fetchedAttrs = attributeService.getAllAttributes().stream()
-            .map(AttributeResponseDto::new)
+            .map(entityConverter::entityToDto)
             .toList();
 
     return ResponseEntity.ok(fetchedAttrs);

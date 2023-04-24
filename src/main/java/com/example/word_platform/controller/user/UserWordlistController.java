@@ -5,6 +5,7 @@ import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.dto.wordlist.WordlistCreateDto;
 import com.example.word_platform.dto.wordlist.WordlistResponseDto;
 import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserWordlistController {
   private final UserWordlistService userWordlistService;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<WordlistResponseDto>> getAllUserWordlists(
@@ -31,7 +33,7 @@ public class UserWordlistController {
   ) {
     List<WordlistResponseDto> fetchedWordlists = userWordlistService.getAllUserWordlists(userId)
             .stream()
-            .map(WordlistResponseDto::new)
+            .map(entityConverter::entityToDto)
             .toList();
 
     return ResponseEntity.ok(fetchedWordlists);
@@ -43,7 +45,7 @@ public class UserWordlistController {
           @PathVariable Long wordlistId
   ) {
     Wordlist wordlist = userWordlistService.getUserWordlistById(userId, wordlistId);
-    return ResponseEntity.ok(new WordlistResponseDto(wordlist));
+    return ResponseEntity.ok(entityConverter.entityToDto(wordlist));
   }
 
   @PostMapping
@@ -52,7 +54,7 @@ public class UserWordlistController {
           @RequestBody WordlistCreateDto dto
   ) {
     Wordlist createdWordlist = userWordlistService.createUserWorldlist(userId, dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(new WordlistResponseDto(createdWordlist));
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdWordlist));
   }
 
   @PutMapping("{wordlistId}")
@@ -62,7 +64,7 @@ public class UserWordlistController {
           @RequestBody WordlistUpdateDto dto
   ) {
     Wordlist updatedWordlist = userWordlistService.updateUserWordlist(userId, wordlistId, dto);
-    return ResponseEntity.ok(new WordlistResponseDto(updatedWordlist));
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedWordlist));
   }
 
   @DeleteMapping("{wordlistId}")
@@ -71,6 +73,6 @@ public class UserWordlistController {
           @PathVariable Long wordlistId
   ) {
     Wordlist removedWordlist = userWordlistService.removeUserWordlist(userId, wordlistId);
-    return ResponseEntity.ok(new WordlistResponseDto(removedWordlist));
+    return ResponseEntity.ok(entityConverter.entityToDto(removedWordlist));
   }
 }

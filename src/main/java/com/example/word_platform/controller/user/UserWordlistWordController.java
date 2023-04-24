@@ -6,7 +6,7 @@ import com.example.word_platform.dto.word.WordAttributesUpdateDto;
 import com.example.word_platform.dto.word.WordCreateDto;
 import com.example.word_platform.dto.word.WordResponseDto;
 import com.example.word_platform.dto.word.WordUpdateDto;
-import com.example.word_platform.dto.dto_mappers.WordResponseDtoMapper;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserWordlistWordController {
   private final UserWordlistWordService userWordlistWordService;
-  private final WordResponseDtoMapper wordResponseDtoMapper;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<WordResponseDto>> getAllWordlistWords(
@@ -34,7 +34,7 @@ public class UserWordlistWordController {
           @PathVariable Long wordlistId
   ) {
     List<WordResponseDto> response = userWordlistWordService.getAllWordlistWords(userId, wordlistId).stream()
-            .map(wordResponseDtoMapper)
+            .map(entityConverter::entityToDto)
             .toList();
     return ResponseEntity.ok(response);
   }
@@ -46,7 +46,7 @@ public class UserWordlistWordController {
           @RequestBody WordCreateDto dto
   ) {
     Word createdWord = userWordlistWordService.createAndAddWord(userId, wordlistId, dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(wordResponseDtoMapper.apply(createdWord));
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdWord));
   }
 
   @PutMapping("{wordId}")
@@ -57,7 +57,7 @@ public class UserWordlistWordController {
           @RequestBody WordUpdateDto dto
   ) {
     Word updatedWord = userWordlistWordService.updateWord(userId, wordlistId, wordId, dto);
-    return ResponseEntity.ok(wordResponseDtoMapper.apply(updatedWord));
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedWord));
   }
 
   @PutMapping("{wordId}/attributes")
@@ -68,7 +68,7 @@ public class UserWordlistWordController {
           @RequestBody WordAttributesUpdateDto dto
   ) {
     Word updatedWord = userWordlistWordService.updateWordAttributes(userId, wordlistId, wordId, dto);
-    return ResponseEntity.ok(wordResponseDtoMapper.apply(updatedWord));
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedWord));
   }
 
   @DeleteMapping("{wordId}")
@@ -78,6 +78,6 @@ public class UserWordlistWordController {
           @PathVariable Long wordId
   ) {
     Word removedWord = userWordlistWordService.removeWord(userId, wordlistId, wordId);
-    return ResponseEntity.ok(wordResponseDtoMapper.apply(removedWord));
+    return ResponseEntity.ok(entityConverter.entityToDto(removedWord));
   }
 }

@@ -4,8 +4,8 @@ import com.example.word_platform.model.User;
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserResponseDto;
 import com.example.word_platform.dto.user.UserUpdateDto;
-import com.example.word_platform.dto.dto_mappers.UserResponseDtoMapper;
 import com.example.word_platform.service.user.UserService;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +25,12 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
   private final UserService userService;
-  private final UserResponseDtoMapper userResponseDtoMapper;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<UserResponseDto>> getAllUsers() {
     List<UserResponseDto> users =  userService.getAllUsers().stream()
-            .map(userResponseDtoMapper)
+            .map(entityConverter::entityToDto)
             .toList();
 
     return ResponseEntity.ok(users);
@@ -39,13 +39,13 @@ public class UserController {
   @GetMapping("{userId}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
     User user =  userService.getUserById(userId);
-    return ResponseEntity.ok(userResponseDtoMapper.apply(user));
+    return ResponseEntity.ok(entityConverter.entityToDto(user));
   }
 
   @PostMapping
   public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto) {
     User createdUser = userService.createUser(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDtoMapper.apply(createdUser));
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdUser));
   }
 
   @PutMapping("{userId}")
@@ -54,12 +54,12 @@ public class UserController {
           @RequestBody UserUpdateDto dto
   ) {
     User updatedUser =  userService.updateUser(userId, dto);
-    return ResponseEntity.ok(userResponseDtoMapper.apply(updatedUser));
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedUser));
   }
 
   @DeleteMapping("{userId}")
   public ResponseEntity<UserResponseDto> removeUser(@PathVariable Long userId) {
     User removedUser =  userService.removeUser(userId);
-    return ResponseEntity.ok(userResponseDtoMapper.apply(removedUser));
+    return ResponseEntity.ok(entityConverter.entityToDto(removedUser));
   }
 }

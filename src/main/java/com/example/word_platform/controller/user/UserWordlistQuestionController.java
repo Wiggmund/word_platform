@@ -5,6 +5,7 @@ import com.example.word_platform.dto.question.QuestionResponseDto;
 import com.example.word_platform.dto.question.QuestionUpdateDto;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.service.user.UserWordlistQuestionService;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserWordlistQuestionController {
   private final UserWordlistQuestionService userWordlistQuestionService;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<QuestionResponseDto>> getAllWordlistQuestions(
@@ -32,7 +34,7 @@ public class UserWordlistQuestionController {
   ) {
     List<QuestionResponseDto> questions = userWordlistQuestionService.getAllWordlistQuestions(userId, wordlistId)
             .stream()
-            .map(QuestionResponseDto::new)
+            .map(entityConverter::entityToDto)
             .toList();
     return ResponseEntity.ok(questions);
   }
@@ -44,7 +46,7 @@ public class UserWordlistQuestionController {
           @RequestBody QuestionCreateDto dto
   ) {
     Question createdQuestion = userWordlistQuestionService.createQuestion(userId, wordlistId, dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(new QuestionResponseDto(createdQuestion));
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdQuestion));
   }
 
   @PutMapping("{questionId}")
@@ -55,7 +57,7 @@ public class UserWordlistQuestionController {
           @RequestBody QuestionUpdateDto dto
   ) {
     Question updatedQuestion = userWordlistQuestionService.updateQuestion(userId, wordlistId, questionId, dto);
-    return ResponseEntity.ok(new QuestionResponseDto(updatedQuestion));
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedQuestion));
   }
 
   @DeleteMapping("{questionId}")
@@ -65,6 +67,6 @@ public class UserWordlistQuestionController {
           @PathVariable Long questionId
   ) {
     Question removedQuestion = userWordlistQuestionService.removeQuestion(userId, wordlistId, questionId);
-    return ResponseEntity.ok(new QuestionResponseDto(removedQuestion));
+    return ResponseEntity.ok(entityConverter.entityToDto(removedQuestion));
   }
 }

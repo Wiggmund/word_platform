@@ -2,6 +2,7 @@ package com.example.word_platform.controller;
 
 import com.example.word_platform.service.WordlistService;
 import com.example.word_platform.dto.wordlist.WordlistResponseDto;
+import com.example.word_platform.shared.EntityConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class WordlistController {
   private final WordlistService wordlistService;
+  private final EntityConverter entityConverter;
 
   @GetMapping
   public ResponseEntity<List<WordlistResponseDto>> getAllWordlists() {
     List<WordlistResponseDto> wordlists = wordlistService.getAllWordlists().stream()
-            .map(WordlistResponseDto::new)
+            .map(entityConverter::entityToDto)
             .toList();
     return ResponseEntity.ok(wordlists);
   }
