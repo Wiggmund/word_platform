@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface QuestionRepo extends JpaRepository<Question, Long> {
   Optional<Question> findByUserAndWordlistAndAnswer(User user, Wordlist wordlist, Attribute attribute);
   List<Question> findAllByWordlist(Wordlist wordlist);
+
+  List<Question> findAllByIdInAndWordlist(List<Long> questionIds, Wordlist wordlist);
 }

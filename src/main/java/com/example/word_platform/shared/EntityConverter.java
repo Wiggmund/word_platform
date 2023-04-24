@@ -2,18 +2,21 @@ package com.example.word_platform.shared;
 
 import com.example.word_platform.dto.attribute.AttributeResponseDto;
 import com.example.word_platform.dto.question.QuestionResponseDto;
+import com.example.word_platform.dto.stats.StatsResponseDto;
 import com.example.word_platform.dto.user.UserResponseDto;
 import com.example.word_platform.dto.word.WordResponseDto;
 import com.example.word_platform.dto.word.WordsAttributesResponseDto;
 import com.example.word_platform.dto.wordlist.WordlistResponseDto;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
+import com.example.word_platform.model.Stats;
 import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EntityConverter {
@@ -74,6 +77,21 @@ public class EntityConverter {
             user == null ? null : user.getId(),
             wordlist == null ? null : wordlist.getId(),
             wordsAttributesResponseDtos
+    );
+  }
+
+  public StatsResponseDto entityToDto(Stats entry) {
+    Wordlist wordlist = entry.getWordlist();
+    Word word = entry.getWord();
+    Question question = entry.getQuestion();
+    return new StatsResponseDto(
+            entry.getId(),
+            entry.getDate(),
+            entry.getCorrect(),
+            entry.getUser().getId(),
+            wordlist == null ? null : wordlist.getId(),
+            word == null ? null : word.getId(),
+            question == null ? null : question.getId()
     );
   }
 }

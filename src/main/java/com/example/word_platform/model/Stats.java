@@ -1,47 +1,47 @@
 package com.example.word_platform.model;
 
+import com.example.word_platform.model.word.Word;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "stats")
 @Data
 @NoArgsConstructor
-public class Question {
+public class Stats {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String text;
-  private String type;
+  private LocalDate date;
+  private Boolean correct;
 
-  @OneToMany(mappedBy = "question")
-  private List<Stats> statsRecords = new ArrayList<>();
+  public Stats(LocalDate date, Boolean correct) {
+    this.date = date;
+    this.correct = correct;
+  }
 
   @ManyToOne
-  @JoinColumn(name = "attribute_id")
-  private Attribute answer;
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")
   private Wordlist wordlist;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+  @JoinColumn(name = "word_id")
+  private Word word;
 
-  public Question(String text, String type) {
-    this.text = text;
-    this.type = type;
-  }
+  @ManyToOne
+  @JoinColumn(name = "question_id")
+  private Question question;
 }

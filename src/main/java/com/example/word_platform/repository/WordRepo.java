@@ -20,6 +20,8 @@ public interface WordRepo extends JpaRepository<Word, Long> {
 
   List<Word> findAllByUser(User user);
 
+  List<Word> findAllByIdInAndWordlist(List<Long> wordIds, Wordlist wordlist);
+
   @Query("SELECT word " +
           "FROM Word word " +
           "LEFT JOIN FETCH word.attributes wordsAttrs " +

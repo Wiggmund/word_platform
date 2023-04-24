@@ -23,6 +23,10 @@ public class QuestionService {
             new ResourceNotFoundException("Question with id [" + questionId + "] not found"));
   }
 
+  public List<Question> getAllQuestionsByIdAndWordlist(List<Long> questionIds, Wordlist wordlist) {
+    return questionRepo.findAllByIdInAndWordlist(questionIds, wordlist);
+  }
+
   public List<Question> getAllWordlistQuestions(Wordlist wordlist) {
     return questionRepo.findAllByWordlist(wordlist);
   }

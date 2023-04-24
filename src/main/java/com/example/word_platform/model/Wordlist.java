@@ -35,6 +35,9 @@ public class Wordlist {
   @OneToMany(mappedBy = "wordlist")
   private List<Question> questions = new ArrayList<>();
 
+  @OneToMany(mappedBy = "wordlist")
+  private List<Stats> statsRecords = new ArrayList<>();
+
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
@@ -80,5 +83,15 @@ public class Wordlist {
   public void removeQuestion(Question question) {
     questions.remove(question);
     question.setWordlist(null);
+  }
+
+  public void addStatsRecords(List<Stats> records) {
+    statsRecords.addAll(records);
+    records.forEach(item -> item.setWordlist(this));
+  }
+
+  public void removeStatsRecords(List<Stats> records) {
+    statsRecords.removeAll(records);
+    records.forEach(item -> item.setWordlist(null));
   }
 }

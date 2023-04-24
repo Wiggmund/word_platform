@@ -34,6 +34,9 @@ public class User {
   @OneToMany(mappedBy = "user")
   private List<Question> questions = new ArrayList<>();
 
+  @OneToMany(mappedBy = "user")
+  private List<Stats> statsRecords = new ArrayList<>();
+
   public User(String username, String email) {
     this.username = username;
     this.email = email;
@@ -67,5 +70,15 @@ public class User {
   public void removeQuestion(Question question) {
     questions.remove(question);
     question.setUser(null);
+  }
+
+  public void addStatsRecords(List<Stats> records) {
+    statsRecords.addAll(records);
+    records.forEach(item -> item.setUser(this));
+  }
+
+  public void removeStatsRecords(List<Stats> records) {
+    statsRecords.removeAll(records);
+    records.forEach(item -> item.setUser(null));
   }
 }

@@ -1,6 +1,7 @@
 package com.example.word_platform.model.word;
 
 import com.example.word_platform.model.Attribute;
+import com.example.word_platform.model.Stats;
 import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
 import jakarta.persistence.CascadeType;
@@ -38,6 +39,9 @@ public class Word {
 
   @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<WordsAttributes> attributes = new ArrayList<>();
+
+  @OneToMany(mappedBy = "word")
+  private List<Stats> statsRecords = new ArrayList<>();
 
   public Word(String value) {
     this.value = value;

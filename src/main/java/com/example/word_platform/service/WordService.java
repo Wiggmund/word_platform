@@ -23,6 +23,10 @@ public class WordService {
     return wordRepo.findAll();
   }
 
+  public List<Word> getAllWordsByIdAndWordlist(List<Long> wordIds, Wordlist wordlist) {
+    return wordRepo.findAllByIdInAndWordlist(wordIds, wordlist);
+  }
+
   public Word getWordById(Long wordId) {
     return wordRepo.findById(wordId).orElseThrow(() ->
             new ResourceNotFoundException("Word with id [" + wordId + "] not found"));
