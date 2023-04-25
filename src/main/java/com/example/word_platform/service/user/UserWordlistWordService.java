@@ -4,7 +4,6 @@ import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
 import com.example.word_platform.model.User;
-import com.example.word_platform.dto.word.WordAttributesUpdateDto;
 import com.example.word_platform.dto.word.WordCreateDto;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.dto.word.WordUpdateDto;
@@ -79,23 +78,21 @@ public class UserWordlistWordService {
     return wordService.updateWord(wordId, dto);
   }
 
-  public Word updateWordAttributes(Long userId, Long wordlistId, Long wordId, WordAttributesUpdateDto dto) {
-    List<WordsAttributesCreateDto> attributeDtos = dto.attributes();
-
+  public Word updateWordAttributes(Long userId, Long wordlistId, Long wordId, List<WordsAttributesCreateDto> dto) {
     userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
-    wordlistService.checkIfWordlistSupportAttributes(wordlist, attributeDtos);
+    wordlistService.checkIfWordlistSupportAttributes(wordlist, dto);
     Word word = wordService.getWordById(wordId);
 
     List<WordsAttributes> wordsAttributesEntries = word.getAttributes();
-    int attributeDtosSize = attributeDtos.size();
+    int attributeDtosSize = dto.size();
     int wordsAttributesEntriesSize = wordsAttributesEntries.size();
 
     if (attributeDtosSize > wordsAttributesEntriesSize)
       throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
               + wordsAttributesEntriesSize + "] but you provide [" + attributeDtosSize + "]");
 
-    Map<String, String> dtoAttributeValues = attributeDtos.stream().collect(Collectors.toMap(
+    Map<String, String> dtoAttributeValues = dto.stream().collect(Collectors.toMap(
             WordsAttributesCreateDto::name,
             WordsAttributesCreateDto::value
     ));

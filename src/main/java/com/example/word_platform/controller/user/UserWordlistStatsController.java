@@ -1,6 +1,6 @@
 package com.example.word_platform.controller.user;
 
-import com.example.word_platform.dto.stats.StatsPackagedCreateDto;
+import com.example.word_platform.dto.stats.StatsCreateDto;
 import com.example.word_platform.dto.stats.StatsResponseDto;
 import com.example.word_platform.service.user.UserWordlistStatsService;
 import com.example.word_platform.shared.EntityConverter;
@@ -26,7 +26,7 @@ public class UserWordlistStatsController {
   public ResponseEntity<List<StatsResponseDto>> createStatsRecords(
           @PathVariable Long userId,
           @PathVariable Long wordlistId,
-          @RequestBody StatsPackagedCreateDto dto
+          @RequestBody List<StatsCreateDto> dto
   ) {
     List<StatsResponseDto> createdRecords = userWordlistStatsService.createStatsRecords(userId, wordlistId, dto)
             .stream()

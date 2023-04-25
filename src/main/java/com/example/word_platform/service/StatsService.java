@@ -1,6 +1,6 @@
 package com.example.word_platform.service;
 
-import com.example.word_platform.dto.stats.StatsPackagedCreateDto;
+import com.example.word_platform.dto.stats.StatsCreateDto;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.model.Stats;
 import com.example.word_platform.model.User;
@@ -29,7 +29,7 @@ public class StatsService {
           Wordlist wordlist,
           List<Question> questions,
           List<Word> words,
-          StatsPackagedCreateDto dto
+          List<StatsCreateDto> dto
   ) {
     Map<Long, Question> questionsById = questions.stream().collect(Collectors.toMap(
             Question::getId,
@@ -40,7 +40,7 @@ public class StatsService {
             Function.identity()
     ));
 
-    List<Stats> newRecords = dto.items().stream()
+    List<Stats> newRecords = dto.stream()
             .map(item -> {
               Stats newRecord = new Stats(item.date(), item.correct());
 

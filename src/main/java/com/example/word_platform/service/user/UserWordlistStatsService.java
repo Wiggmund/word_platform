@@ -1,7 +1,6 @@
 package com.example.word_platform.service.user;
 
 import com.example.word_platform.dto.stats.StatsCreateDto;
-import com.example.word_platform.dto.stats.StatsPackagedCreateDto;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.model.Stats;
@@ -30,14 +29,14 @@ public class UserWordlistStatsService {
   public List<Stats> createStatsRecords(
           Long userId,
           Long wordlistId,
-          StatsPackagedCreateDto dto
+          List<StatsCreateDto> dto
   ) {
     User user = userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
 
 
     // Retrieve unique question ids
-    List<Long> requiredQuestionIds = dto.items().stream()
+    List<Long> requiredQuestionIds = dto.stream()
             .collect(Collectors.toMap(
                     StatsCreateDto::questionId,
                     StatsCreateDto::questionId,
@@ -48,7 +47,7 @@ public class UserWordlistStatsService {
     validateQuestions(requiredQuestionIds, fetchedQuestions);
 
     // Retrieve unique word ids
-    List<Long> requiredWordIds = dto.items().stream()
+    List<Long> requiredWordIds = dto.stream()
             .collect(Collectors.toMap(
                     StatsCreateDto::wordId,
                     StatsCreateDto::wordId,

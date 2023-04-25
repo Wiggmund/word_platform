@@ -1,8 +1,8 @@
 package com.example.word_platform.controller.user;
 
+import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.service.user.UserWordlistWordService;
 import com.example.word_platform.model.word.Word;
-import com.example.word_platform.dto.word.WordAttributesUpdateDto;
 import com.example.word_platform.dto.word.WordCreateDto;
 import com.example.word_platform.dto.word.WordResponseDto;
 import com.example.word_platform.dto.word.WordUpdateDto;
@@ -65,7 +65,7 @@ public class UserWordlistWordController {
           @PathVariable Long userId,
           @PathVariable Long wordlistId,
           @PathVariable Long wordId,
-          @RequestBody WordAttributesUpdateDto dto
+          @RequestBody List<WordsAttributesCreateDto> dto
   ) {
     Word updatedWord = userWordlistWordService.updateWordAttributes(userId, wordlistId, wordId, dto);
     return ResponseEntity.ok(entityConverter.entityToDto(updatedWord));
