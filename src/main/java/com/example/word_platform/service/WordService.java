@@ -1,17 +1,16 @@
 package com.example.word_platform.service;
 
 import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
-import com.example.word_platform.exception.ResourceNotFoundException;
-import com.example.word_platform.model.User;
-import com.example.word_platform.model.word.Word;
-import com.example.word_platform.repository.WordRepo;
 import com.example.word_platform.dto.word.WordCreateDto;
 import com.example.word_platform.dto.word.WordUpdateDto;
+import com.example.word_platform.exception.ResourceNotFoundException;
+import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
+import com.example.word_platform.model.word.Word;
+import com.example.word_platform.repository.WordRepo;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class WordService {
 
   public Word getWordById(Long wordId) {
     return wordRepo.findById(wordId).orElseThrow(() ->
-            new ResourceNotFoundException("Word with id [" + wordId + "] not found"));
+        new ResourceNotFoundException("Word with id [" + wordId + "] not found"));
   }
 
   public List<Word> getAllWordsByListWithAttributes(Wordlist wordlist) {
@@ -41,16 +40,16 @@ public class WordService {
   }
 
   public Word createWord(
-          User user,
-          Wordlist wordlist,
-          WordCreateDto dto,
-          AttributeWithValuesDto wordAttributes
+      User user,
+      Wordlist wordlist,
+      WordCreateDto dto,
+      AttributeWithValuesDto wordAttributes
   ) {
     Word newWord = new Word(dto.value());
     newWord.setUser(user);
     newWord.setWordlist(wordlist);
     return wordRepo.save(
-            wordsAttributesService.addAttributes(newWord, wordAttributes)
+        wordsAttributesService.addAttributes(newWord, wordAttributes)
     );
   }
 

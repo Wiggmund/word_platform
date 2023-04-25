@@ -1,19 +1,18 @@
 package com.example.word_platform.service;
 
+import com.example.word_platform.dto.word.WordsAttributesCreateDto;
+import com.example.word_platform.dto.wordlist.WordlistCreateDto;
+import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.shared.DuplicationCheckService;
 import com.example.word_platform.model.User;
-import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.repository.WordlistRepo;
-import com.example.word_platform.dto.wordlist.WordlistCreateDto;
-import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
+import com.example.word_platform.shared.DuplicationCheckService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class WordlistService {
 
   public Wordlist getWordlistById(Long wordlistId) {
     return wordlistRepo.findById(wordlistId).orElseThrow(() ->
-            new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] not found"));
+        new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] not found"));
   }
 
   public List<Wordlist> getAllWordlistsByUser(User user) {
@@ -36,13 +35,13 @@ public class WordlistService {
 
   public Wordlist getWordlistByIdAndUser(Long wordlistId, User user) {
     return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
-            new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] " +
-                    "for user with id [" + user.getId() + "] not found"));
+        new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] "
+            + "for user with id [" + user.getId() + "] not found"));
   }
 
   public Wordlist createWordlist(
-          User user,
-          WordlistCreateDto dto
+      User user,
+      WordlistCreateDto dto
   ) {
     duplicationCheckService.checkWordlistForTitle(dto.title());
     Wordlist newWordlist = new Wordlist(dto.title(), dto.description());
@@ -53,9 +52,12 @@ public class WordlistService {
 
   public Wordlist updateWordlist(Long wordlistId, WordlistUpdateDto dto) {
     Wordlist candidate = getWordlistById(wordlistId);
-    WordlistUpdateDto candidateDto = new WordlistUpdateDto(candidate.getTitle(), candidate.getDescription());
+    WordlistUpdateDto candidateDto =
+        new WordlistUpdateDto(candidate.getTitle(), candidate.getDescription());
 
-    if (candidateDto.equals(dto)) return candidate;
+    if (candidateDto.equals(dto)) {
+      return candidate;
+    }
 
     duplicationCheckService.checkWordlistForTitle(dto.title());
 
@@ -81,27 +83,31 @@ public class WordlistService {
   }
 
   public void checkIfWordlistSupportAttributes(
-          Wordlist wordlist,
-          List<WordsAttributesCreateDto> attributesDtos
+      Wordlist wordlist,
+      List<WordsAttributesCreateDto> attributesDtos
   ) {
     List<Attribute> wordlistAttributes = wordlist.getAttributes();
 
-    if (wordlistAttributes.isEmpty()) return;
+    if (wordlistAttributes.isEmpty()) {
+      return;
+    }
 
-    List<String> wordlistAttributeNames = wordlistAttributes.stream().map(Attribute::getName).toList();
+    List<String> wordlistAttributeNames =
+        wordlistAttributes.stream().map(Attribute::getName).toList();
     List<String> unSupportedAttributes = attributesDtos.stream()
-            .map(WordsAttributesCreateDto::name)
-            .filter(name -> !wordlistAttributeNames.contains(name))
-            .toList();
+        .map(WordsAttributesCreateDto::name)
+        .filter(name -> !wordlistAttributeNames.contains(name))
+        .toList();
 
-    if (!unSupportedAttributes.isEmpty())
-      throw new WordlistAttributesException("Wordlist with id [" + wordlist.getId() + "] " +
-              "doesn't support [" + String.join(", ", unSupportedAttributes) + "] attributes");
+    if (!unSupportedAttributes.isEmpty()) {
+      throw new WordlistAttributesException("Wordlist with id [" + wordlist.getId() + "] "
+          + "doesn't support [" + String.join(", ", unSupportedAttributes) + "] attributes");
+    }
   }
 
   public void checkIfAllAttributesProvided(
-          Wordlist wordlist,
-          List<WordsAttributesCreateDto> wordsAttributesCreateDtos
+      Wordlist wordlist,
+      List<WordsAttributesCreateDto> wordsAttributesCreateDtos
   ) {
     checkIfWordlistSupportAttributes(wordlist, wordsAttributesCreateDtos);
 
@@ -109,22 +115,27 @@ public class WordlistService {
     long wordlistAttributesCount = wordlistAttributes.size();
     long attributeDtosCount = wordsAttributesCreateDtos.size();
 
-    if (wordlistAttributes.isEmpty()) return;
+    if (wordlistAttributes.isEmpty()) {
+      return;
+    }
 
-    if (attributeDtosCount > wordlistAttributesCount)
+    if (attributeDtosCount > wordlistAttributesCount) {
       throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
-              + wordlistAttributesCount + "] but you provide [" + attributeDtosCount + "]");
+          + wordlistAttributesCount + "] but you provide [" + attributeDtosCount + "]");
+    }
 
     List<String> dtoAttributeNames = wordsAttributesCreateDtos.stream()
-            .map(WordsAttributesCreateDto::name)
-            .toList();
+        .map(WordsAttributesCreateDto::name)
+        .toList();
     List<String> unProvidedAttributes = wordlistAttributes.stream()
-            .map(Attribute::getName)
-            .filter(name -> !dtoAttributeNames.contains(name))
-            .toList();
+        .map(Attribute::getName)
+        .filter(name -> !dtoAttributeNames.contains(name))
+        .toList();
 
-    if (!unProvidedAttributes.isEmpty())
-      throw new WordlistAttributesException("You didn't provide [" + String.join(", ", unProvidedAttributes) +
-              "] attributes for wordlist with id [" + wordlist.getId() + "]");
+    if (!unProvidedAttributes.isEmpty()) {
+      throw new WordlistAttributesException(
+          "You didn't provide [" + String.join(", ", unProvidedAttributes)
+              + "] attributes for wordlist with id [" + wordlist.getId() + "]");
+    }
   }
 }

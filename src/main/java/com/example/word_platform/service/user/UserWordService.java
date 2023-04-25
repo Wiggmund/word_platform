@@ -3,10 +3,9 @@ package com.example.word_platform.service.user;
 import com.example.word_platform.model.User;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.service.WordService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor

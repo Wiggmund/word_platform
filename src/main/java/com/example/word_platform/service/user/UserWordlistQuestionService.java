@@ -11,10 +11,9 @@ import com.example.word_platform.service.AttributeService;
 import com.example.word_platform.service.QuestionService;
 import com.example.word_platform.service.WordlistService;
 import com.example.word_platform.shared.DuplicationCheckService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -26,22 +25,23 @@ public class UserWordlistQuestionService {
   private final DuplicationCheckService duplicationCheckService;
 
   private record EntityValidationsResult(
-        User user,
-        Wordlist wordlist
-  ) {}
+      User user,
+      Wordlist wordlist
+  ) {
+  }
 
   public List<Question> getAllWordlistQuestions(
-          Long userId,
-          Long wordlistId
+      Long userId,
+      Long wordlistId
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
     return questionService.getAllWordlistQuestions(entities.wordlist());
   }
 
   public Question createQuestion(
-          Long userId,
-          Long wordlistId,
-          QuestionCreateDto dto
+      Long userId,
+      Long wordlistId,
+      QuestionCreateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
     User user = entities.user();
@@ -60,10 +60,10 @@ public class UserWordlistQuestionService {
   }
 
   public Question updateQuestion(
-          Long userId,
-          Long wordlistId,
-          Long questionId,
-          QuestionUpdateDto dto
+      Long userId,
+      Long wordlistId,
+      Long questionId,
+      QuestionUpdateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
     User user = entities.user();
@@ -73,40 +73,41 @@ public class UserWordlistQuestionService {
     checkAttributeAndForDuplication(user, wordlist, attribute);
 
     return questionService.updateQuestion(
-            questionId,
-            attribute,
-            dto
+        questionId,
+        attribute,
+        dto
     );
   }
 
   public Question removeQuestion(
-          Long userId,
-          Long wordlistId,
-          Long questionId
+      Long userId,
+      Long wordlistId,
+      Long questionId
   ) {
     checkEntitiesPresence(userId, wordlistId);
     return questionService.removeQuestion(questionId);
   }
 
   private void checkAttributeAndForDuplication(
-          User user,
-          Wordlist wordlist,
-          Attribute attribute
+      User user,
+      Wordlist wordlist,
+      Attribute attribute
   ) {
-    if (!wordlist.getAttributes().contains(attribute))
+    if (!wordlist.getAttributes().contains(attribute)) {
       throw new WordlistAttributesException("Wordlist [" + wordlist.getTitle()
-              + "] doesn't support [" + attribute.getName() + "] attribute");
+          + "] doesn't support [" + attribute.getName() + "] attribute");
+    }
 
     duplicationCheckService.checkQuestionForUserWordlistAndAttribute(user, wordlist, attribute);
   }
 
   private EntityValidationsResult checkEntitiesPresence(
-          Long userId,
-          Long wordlistId
+      Long userId,
+      Long wordlistId
   ) {
-      return new EntityValidationsResult(
+    return new EntityValidationsResult(
         userService.getUserById(userId),
         wordlistService.getWordlistById(wordlistId)
-      );
+    );
   }
 }

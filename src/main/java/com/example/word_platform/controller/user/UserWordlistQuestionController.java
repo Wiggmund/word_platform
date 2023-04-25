@@ -6,6 +6,7 @@ import com.example.word_platform.dto.question.QuestionUpdateDto;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.service.user.UserWordlistQuestionService;
 import com.example.word_platform.shared.EntityConverter;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/v1/users/{userId}/wordlists/{wordlistId}/questions")
 @AllArgsConstructor
@@ -29,10 +28,11 @@ public class UserWordlistQuestionController {
 
   @GetMapping
   public ResponseEntity<List<QuestionResponseDto>> getAllWordlistQuestions(
-          @PathVariable Long userId,
-          @PathVariable Long wordlistId
+      @PathVariable Long userId,
+      @PathVariable Long wordlistId
   ) {
-    List<QuestionResponseDto> questions = userWordlistQuestionService.getAllWordlistQuestions(userId, wordlistId)
+    List<QuestionResponseDto> questions =
+        userWordlistQuestionService.getAllWordlistQuestions(userId, wordlistId)
             .stream()
             .map(entityConverter::entityToDto)
             .toList();
@@ -41,32 +41,35 @@ public class UserWordlistQuestionController {
 
   @PostMapping
   public ResponseEntity<QuestionResponseDto> createQuestion(
-          @PathVariable Long userId,
-          @PathVariable Long wordlistId,
-          @RequestBody QuestionCreateDto dto
+      @PathVariable Long userId,
+      @PathVariable Long wordlistId,
+      @RequestBody QuestionCreateDto dto
   ) {
     Question createdQuestion = userWordlistQuestionService.createQuestion(userId, wordlistId, dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdQuestion));
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(entityConverter.entityToDto(createdQuestion));
   }
 
   @PutMapping("{questionId}")
   public ResponseEntity<QuestionResponseDto> updateQuestion(
-          @PathVariable Long userId,
-          @PathVariable Long wordlistId,
-          @PathVariable Long questionId,
-          @RequestBody QuestionUpdateDto dto
+      @PathVariable Long userId,
+      @PathVariable Long wordlistId,
+      @PathVariable Long questionId,
+      @RequestBody QuestionUpdateDto dto
   ) {
-    Question updatedQuestion = userWordlistQuestionService.updateQuestion(userId, wordlistId, questionId, dto);
+    Question updatedQuestion =
+        userWordlistQuestionService.updateQuestion(userId, wordlistId, questionId, dto);
     return ResponseEntity.ok(entityConverter.entityToDto(updatedQuestion));
   }
 
   @DeleteMapping("{questionId}")
   public ResponseEntity<QuestionResponseDto> removeQuestion(
-          @PathVariable Long userId,
-          @PathVariable Long wordlistId,
-          @PathVariable Long questionId
+      @PathVariable Long userId,
+      @PathVariable Long wordlistId,
+      @PathVariable Long questionId
   ) {
-    Question removedQuestion = userWordlistQuestionService.removeQuestion(userId, wordlistId, questionId);
+    Question removedQuestion =
+        userWordlistQuestionService.removeQuestion(userId, wordlistId, questionId);
     return ResponseEntity.ok(entityConverter.entityToDto(removedQuestion));
   }
 }

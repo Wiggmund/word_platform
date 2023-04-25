@@ -12,11 +12,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "wordlists")
@@ -44,9 +43,9 @@ public class Wordlist {
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
-          name = "wordlists_attributes",
-          joinColumns = @JoinColumn(name = "wordlist_id"),
-          inverseJoinColumns = @JoinColumn(name = "attribute_id")
+      name = "wordlists_attributes",
+      joinColumns = @JoinColumn(name = "wordlist_id"),
+      inverseJoinColumns = @JoinColumn(name = "attribute_id")
   )
   private List<Attribute> attributes = new ArrayList<>();
 

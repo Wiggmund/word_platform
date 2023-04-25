@@ -1,15 +1,14 @@
 package com.example.word_platform.service;
 
+import com.example.word_platform.dto.attribute.AttributeCreateDto;
+import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.repository.AttributeRepo;
-import com.example.word_platform.dto.attribute.AttributeCreateDto;
 import com.example.word_platform.shared.DuplicationCheckService;
-import com.example.word_platform.dto.word.WordsAttributesCreateDto;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -23,7 +22,7 @@ public class AttributeService {
 
   public Attribute getAttributeById(Long attributeId) {
     return attributeRepo.findById(attributeId).orElseThrow(() ->
-            new ResourceNotFoundException("Attribute with id [" + attributeId + "] not found"));
+        new ResourceNotFoundException("Attribute with id [" + attributeId + "] not found"));
   }
 
   public Attribute createAttribute(AttributeCreateDto dto) {
@@ -33,37 +32,40 @@ public class AttributeService {
   }
 
   public Attribute createBaseAttribute(AttributeCreateDto dto) {
-    if (!dto.type().equalsIgnoreCase("base"))
+    if (!dto.type().equalsIgnoreCase("base")) {
       throw new IllegalArgumentException("Can't create attribute for types other than [base]");
+    }
 
     return createAttribute(dto);
   }
 
   public List<Attribute> createManyAttributes(List<AttributeCreateDto> dtos) {
     duplicationCheckService.checkAttributesForName(
-            dtos.stream().map(AttributeCreateDto::name).toList()
+        dtos.stream().map(AttributeCreateDto::name).toList()
     );
 
     List<Attribute> newAttributes = dtos.stream()
-            .map(item -> new Attribute(item.name(), item.type()))
-            .toList();
+        .map(item -> new Attribute(item.name(), item.type()))
+        .toList();
 
     return attributeRepo.saveAll(newAttributes);
   }
 
-  public List<Attribute> getAttributesFromOrCreate(List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
+  public List<Attribute> getAttributesFromOrCreate(
+      List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
     List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIn(
-            wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
+        wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
     );
 
-    if (fetchedAttributes.size() == wordsAttributesCreateDtos.size())
+    if (fetchedAttributes.size() == wordsAttributesCreateDtos.size()) {
       return fetchedAttributes;
+    }
 
     if (fetchedAttributes.size() < wordsAttributesCreateDtos.size()) {
       checkBaseAttributesPresence(wordsAttributesCreateDtos, fetchedAttributes);
 
       fetchedAttributes.addAll(
-              createCustomAttributes(wordsAttributesCreateDtos, fetchedAttributes)
+          createCustomAttributes(wordsAttributesCreateDtos, fetchedAttributes)
       );
     }
 
@@ -71,43 +73,46 @@ public class AttributeService {
   }
 
   private void checkBaseAttributesPresence(
-          List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
-          List<Attribute> fetchedAttributes
+      List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
+      List<Attribute> fetchedAttributes
   ) {
     List<String> dtoBaseAttributeNames = wordsAttributesCreateDtos.stream()
-            .filter(dto -> dto.type().equalsIgnoreCase("base"))
-            .map(WordsAttributesCreateDto::name)
-            .toList();
+        .filter(dto -> dto.type().equalsIgnoreCase("base"))
+        .map(WordsAttributesCreateDto::name)
+        .toList();
 
     List<String> fetchedAttributeNames = fetchedAttributes.stream()
-            .filter(attribute -> attribute.getType().equalsIgnoreCase("base"))
-            .map(Attribute::getName)
-            .toList();
+        .filter(attribute -> attribute.getType().equalsIgnoreCase("base"))
+        .map(Attribute::getName)
+        .toList();
 
     List<String> nonExistentBaseAttributes = dtoBaseAttributeNames.stream()
-            .filter(dtoBaseAttributeName -> !fetchedAttributeNames.contains(dtoBaseAttributeName))
-            .toList();
+        .filter(dtoBaseAttributeName -> !fetchedAttributeNames.contains(dtoBaseAttributeName))
+        .toList();
 
-    if(!nonExistentBaseAttributes.isEmpty())
-      throw new ResourceNotFoundException("Base attributes [" + String.join(", ", nonExistentBaseAttributes) + "] don't exist");
+    if (!nonExistentBaseAttributes.isEmpty()) {
+      throw new ResourceNotFoundException(
+          "Base attributes [" + String.join(", ", nonExistentBaseAttributes) + "] don't exist");
+    }
   }
+
   private List<Attribute> createCustomAttributes(
-          List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
-          List<Attribute> fetchedAttributes
+      List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
+      List<Attribute> fetchedAttributes
   ) {
     List<WordsAttributesCreateDto> customAttributeDtos = wordsAttributesCreateDtos.stream()
-            .filter(dto -> dto.type().equalsIgnoreCase("custom"))
-            .toList();
+        .filter(dto -> dto.type().equalsIgnoreCase("custom"))
+        .toList();
 
     List<String> customFetchedAttributeNames = fetchedAttributes.stream()
-            .filter(attribute -> attribute.getType().equalsIgnoreCase("custom"))
-            .map(Attribute::getName)
-            .toList();
+        .filter(attribute -> attribute.getType().equalsIgnoreCase("custom"))
+        .map(Attribute::getName)
+        .toList();
 
     List<AttributeCreateDto> customAttributesDtosToCreate = customAttributeDtos.stream()
-            .filter(dto -> !customFetchedAttributeNames.contains(dto.name()))
-            .map(dto -> new AttributeCreateDto(dto.name(), dto.type()))
-            .toList();
+        .filter(dto -> !customFetchedAttributeNames.contains(dto.name()))
+        .map(dto -> new AttributeCreateDto(dto.name(), dto.type()))
+        .toList();
 
     return createManyAttributes(customAttributesDtosToCreate);
   }

@@ -3,6 +3,7 @@ plugins {
 	id 'war'
 	id 'org.springframework.boot' version '3.0.5'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'checkstyle'
 }
 
 group = 'com.example'
@@ -13,6 +14,19 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+}
+
+checkstyle {
+	toolVersion '10.9.3'
+	configFile file("$rootDir/checkstyle.xml")
+}
+
+checkstyleMain {
+	source = 'src/main/java'
+}
+
+checkstyleTest {
+	source = 'src/test/java'
 }
 
 repositories {

@@ -8,10 +8,9 @@ import com.example.word_platform.model.Question;
 import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.repository.QuestionRepo;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class QuestionService {
 
   public Question getQuestionById(Long questionId) {
     return questionRepo.findById(questionId).orElseThrow(() ->
-            new ResourceNotFoundException("Question with id [" + questionId + "] not found"));
+        new ResourceNotFoundException("Question with id [" + questionId + "] not found"));
   }
 
   public List<Question> getAllQuestionsByIdAndWordlist(List<Long> questionIds, Wordlist wordlist) {
@@ -31,7 +30,8 @@ public class QuestionService {
     return questionRepo.findAllByWordlist(wordlist);
   }
 
-  public Question createQuestion(User user, Wordlist wordlist, Attribute attribute, QuestionCreateDto dto) {
+  public Question createQuestion(User user, Wordlist wordlist, Attribute attribute,
+                                 QuestionCreateDto dto) {
     Question newQuestion = new Question(dto.text(), dto.type());
 
     newQuestion.setUser(user);

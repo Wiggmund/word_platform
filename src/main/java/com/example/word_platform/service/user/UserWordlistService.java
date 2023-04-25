@@ -1,20 +1,20 @@
 package com.example.word_platform.service.user;
 
-import com.example.word_platform.model.User;
 import com.example.word_platform.dto.wordlist.WordlistCreateDto;
-import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
+import com.example.word_platform.model.User;
+import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.service.WordlistService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class UserWordlistService {
   private final UserService userService;
   private final WordlistService wordlistService;
+
   public List<Wordlist> getAllUserWordlists(Long userId) {
     User user = userService.getUserById(userId);
     return wordlistService.getAllWordlistsByUser(user);
@@ -28,7 +28,7 @@ public class UserWordlistService {
   public Wordlist createUserWorldlist(Long userId, WordlistCreateDto dto) {
     User user = userService.getUserById(userId);
 
-    Wordlist newWordlist =  wordlistService.createWordlist(user, dto);
+    Wordlist newWordlist = wordlistService.createWordlist(user, dto);
     user.addWordlist(newWordlist);
     userService.save(user);
 

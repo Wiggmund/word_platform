@@ -7,13 +7,12 @@ import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.StatsRepo;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
@@ -25,33 +24,33 @@ public class StatsService {
   }
 
   public List<Stats> createStatsRecords(
-          User user,
-          Wordlist wordlist,
-          List<Question> questions,
-          List<Word> words,
-          List<StatsCreateDto> dto
+      User user,
+      Wordlist wordlist,
+      List<Question> questions,
+      List<Word> words,
+      List<StatsCreateDto> dto
   ) {
     Map<Long, Question> questionsById = questions.stream().collect(Collectors.toMap(
-            Question::getId,
-            Function.identity()
+        Question::getId,
+        Function.identity()
     ));
     Map<Long, Word> wordsById = words.stream().collect(Collectors.toMap(
-            Word::getId,
-            Function.identity()
+        Word::getId,
+        Function.identity()
     ));
 
     List<Stats> newRecords = dto.stream()
-            .map(item -> {
-              Stats newRecord = new Stats(item.date(), item.correct());
+        .map(item -> {
+          Stats newRecord = new Stats(item.date(), item.correct());
 
-              newRecord.setUser(user);
-              newRecord.setWordlist(wordlist);
-              newRecord.setWord(wordsById.get(item.wordId()));
-              newRecord.setQuestion(questionsById.get(item.questionId()));
+          newRecord.setUser(user);
+          newRecord.setWordlist(wordlist);
+          newRecord.setWord(wordsById.get(item.wordId()));
+          newRecord.setQuestion(questionsById.get(item.questionId()));
 
-              return newRecord;
-            })
-            .toList();
+          return newRecord;
+        })
+        .toList();
 
     return statsRepo.saveAll(newRecords);
   }
