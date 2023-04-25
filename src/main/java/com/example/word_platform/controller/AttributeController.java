@@ -1,5 +1,6 @@
 package com.example.word_platform.controller;
 
+import com.example.word_platform.model.Attribute;
 import com.example.word_platform.service.AttributeService;
 import com.example.word_platform.dto.attribute.AttributeCreateDto;
 import com.example.word_platform.dto.attribute.AttributeResponseDto;
@@ -32,8 +33,8 @@ public class AttributeController {
   }
 
   @PostMapping("/base")
-  public ResponseEntity<Long> createBaseAttribute(@RequestBody AttributeCreateDto dto) {
-    Long createdBaseAttrId = attributeService.createBaseAttribute(dto).getId();
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdBaseAttrId);
+  public ResponseEntity<AttributeResponseDto> createBaseAttribute(@RequestBody AttributeCreateDto dto) {
+    Attribute createdBaseAttribute = attributeService.createBaseAttribute(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdBaseAttribute));
   }
 }

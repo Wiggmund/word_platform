@@ -70,20 +70,6 @@ public class AttributeService {
     return fetchedAttributes;
   }
 
-  public List<Attribute> getAttributesFromOrThrow(List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
-    List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIn(
-            wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
-    );
-
-    if (fetchedAttributes.size() < wordsAttributesCreateDtos.size()) {
-      checkBaseAttributesPresence(wordsAttributesCreateDtos, fetchedAttributes);
-
-      throw new IllegalArgumentException("Illegal to create new custom attributes");
-    }
-
-    return fetchedAttributes;
-  }
-
   private void checkBaseAttributesPresence(
           List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
           List<Attribute> fetchedAttributes
