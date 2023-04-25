@@ -91,19 +91,25 @@ public class DuplicationCheckService {
             wordlist,
             attributes.values().stream().toList()
     );
+
     if(candidate.isEmpty()) return;
 
     StringBuilder stringBuilder = new StringBuilder();
+    String nameValueDelimiter = "=";
+    String attributesDelimiter = ", ";
+
     String duplicatedAttributes = attributes.entrySet().stream().reduce(
             stringBuilder,
             (sb, entry) -> sb
                     .append(entry.getKey().getName())
-                    .append("=")
-                    .append(entry.getValue()),
-            (sb1, sb2) -> sb1
-                    .append(", ")
-                    .append(sb2.toString())
-    ).toString();
+                    .append(nameValueDelimiter)
+                    .append(entry.getValue())
+                    .append(attributesDelimiter),
+            StringBuilder::append
+    ).delete(
+            stringBuilder.lastIndexOf(attributesDelimiter),
+            stringBuilder.length()
+    ).toString().trim();
 
     throw new ResourceAlreadyExistsException("Word [" + wordValue + "] " +
             "with attributes [" + duplicatedAttributes + "] " + EXCEPTION_MSG);
