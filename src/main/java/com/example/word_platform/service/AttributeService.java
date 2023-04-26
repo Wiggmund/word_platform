@@ -32,7 +32,12 @@ public class AttributeService {
 
   public Attribute createAttribute(AttributeCreateDto dto) {
     duplicationCheckService.checkAttributeForName(dto.name());
-    Attribute newAttribute = new Attribute(dto.name(), dto.type());
+
+    Attribute newAttribute = Attribute.builder()
+        .name(dto.name())
+        .type(dto.type())
+        .build();
+
     return attributeRepo.save(newAttribute);
   }
 
@@ -50,7 +55,10 @@ public class AttributeService {
     );
 
     List<Attribute> newAttributes = dtos.stream()
-        .map(item -> new Attribute(item.name(), item.type()))
+        .map(item -> Attribute.builder()
+            .name(item.name())
+            .type(item.type())
+            .build())
         .toList();
 
     return attributeRepo.saveAll(newAttributes);

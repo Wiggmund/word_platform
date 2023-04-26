@@ -10,6 +10,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +39,6 @@ public class User {
 
   @OneToMany(mappedBy = "user")
   private List<Stats> statsRecords = new ArrayList<>();
-
-  public User(String username, String email) {
-    this.username = username;
-    this.email = email;
-  }
 
   public void addWord(Word word) {
     words.add(word);

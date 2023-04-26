@@ -30,7 +30,11 @@ public class UserService {
   public User createUser(UserCreateDto dto) {
     duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
 
-    User newUser = new User(dto.username(), dto.email());
+    User newUser = User.builder()
+        .username(dto.username())
+        .email(dto.email())
+        .build();
+
     return userRepo.save(newUser);
   }
 

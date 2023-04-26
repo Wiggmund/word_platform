@@ -10,6 +10,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "questions")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Question {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +42,4 @@ public class Question {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
-
-  public Question(String text, String type) {
-    this.text = text;
-    this.type = type;
-  }
 }

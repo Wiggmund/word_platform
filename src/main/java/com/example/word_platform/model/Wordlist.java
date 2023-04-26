@@ -14,6 +14,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +23,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "wordlists")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Wordlist {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

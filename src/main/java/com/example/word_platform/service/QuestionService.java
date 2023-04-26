@@ -33,11 +33,13 @@ public class QuestionService {
 
   public Question createQuestion(User user, Wordlist wordlist, Attribute attribute,
                                  QuestionCreateDto dto) {
-    Question newQuestion = new Question(dto.text(), dto.type());
-
-    newQuestion.setUser(user);
-    newQuestion.setWordlist(wordlist);
-    newQuestion.setAnswer(attribute);
+    Question newQuestion = Question.builder()
+        .text(dto.text())
+        .type(dto.type())
+        .user(user)
+        .wordlist(wordlist)
+        .answer(attribute)
+        .build();
 
     return questionRepo.save(newQuestion);
   }

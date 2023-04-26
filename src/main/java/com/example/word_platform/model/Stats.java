@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,17 +18,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "stats")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Stats {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private LocalDate date;
   private Boolean correct;
-
-  public Stats(LocalDate date, Boolean correct) {
-    this.date = date;
-    this.correct = correct;
-  }
 
   @ManyToOne
   @JoinColumn(name = "user_id")

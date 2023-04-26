@@ -15,6 +15,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "words")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Word {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +45,6 @@ public class Word {
 
   @OneToMany(mappedBy = "word")
   private List<Stats> statsRecords = new ArrayList<>();
-
-  public Word(String value) {
-    this.value = value;
-  }
 
   public WordsAttributes addAttribute(Attribute attribute, String value) {
     WordsAttributes wordAttribute = new WordsAttributes(this, attribute, value);

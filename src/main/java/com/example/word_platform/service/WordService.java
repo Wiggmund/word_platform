@@ -47,9 +47,12 @@ public class WordService {
       WordCreateDto dto,
       AttributeWithValuesDto wordAttributes
   ) {
-    Word newWord = new Word(dto.value());
-    newWord.setUser(user);
-    newWord.setWordlist(wordlist);
+    Word newWord = Word.builder()
+        .value(dto.value())
+        .user(user)
+        .wordlist(wordlist)
+        .build();
+
     return wordRepo.save(
         wordsAttributesService.addAttributes(newWord, wordAttributes)
     );

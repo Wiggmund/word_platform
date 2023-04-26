@@ -19,8 +19,14 @@ class AttributeRepoTest {
   void setUp() {
     underTest.saveAllAndFlush(
         List.of(
-            new Attribute("translation", "base"),
-            new Attribute("context", "custom")
+            Attribute.builder()
+                .name("translation")
+                .type("base")
+                .build(),
+            Attribute.builder()
+                .name("context")
+                .type("custom")
+                .build()
         )
     );
   }

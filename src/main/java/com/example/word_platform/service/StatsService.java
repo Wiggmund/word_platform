@@ -40,16 +40,14 @@ public class StatsService {
     ));
 
     List<Stats> newRecords = dto.stream()
-        .map(item -> {
-          Stats newRecord = new Stats(item.date(), item.correct());
-
-          newRecord.setUser(user);
-          newRecord.setWordlist(wordlist);
-          newRecord.setWord(wordsById.get(item.wordId()));
-          newRecord.setQuestion(questionsById.get(item.questionId()));
-
-          return newRecord;
-        })
+        .map(item -> Stats.builder()
+              .date(item.date())
+              .correct(item.correct())
+              .user(user)
+              .wordlist(wordlist)
+              .word(wordsById.get(item.wordId()))
+              .question(questionsById.get(item.questionId()))
+              .build())
         .toList();
 
     return statsRepo.saveAll(newRecords);

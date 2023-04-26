@@ -57,8 +57,12 @@ public class WordlistService {
       WordlistCreateDto dto
   ) {
     duplicationCheckService.checkWordlistForTitle(dto.title());
-    Wordlist newWordlist = new Wordlist(dto.title(), dto.description());
-    newWordlist.setUser(user);
+
+    Wordlist newWordlist = Wordlist.builder()
+        .title(dto.title())
+        .description(dto.description())
+        .user(user)
+        .build();
 
     return wordlistRepo.save(newWordlist);
   }
