@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "attributes")
@@ -30,11 +31,17 @@ public class Attribute {
   private String type;
 
   @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
+  @ToString.Exclude
   private List<WordsAttributes> words = new ArrayList<>();
 
   @OneToMany(mappedBy = "answer")
+  @Builder.Default
+  @ToString.Exclude
   private List<Question> questions = new ArrayList<>();
 
   @ManyToMany(mappedBy = "attributes")
+  @Builder.Default
+  @ToString.Exclude
   private List<Wordlist> wordlists = new ArrayList<>();
 }

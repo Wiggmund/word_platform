@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "wordlists")
@@ -33,16 +34,23 @@ public class Wordlist {
   private String description;
 
   @OneToMany(mappedBy = "wordlist")
+  @ToString.Exclude
+  @Builder.Default
   private List<Word> words = new ArrayList<>();
 
   @OneToMany(mappedBy = "wordlist")
+  @ToString.Exclude
+  @Builder.Default
   private List<Question> questions = new ArrayList<>();
 
   @OneToMany(mappedBy = "wordlist")
+  @ToString.Exclude
+  @Builder.Default
   private List<Stats> statsRecords = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @ToString.Exclude
   private User user;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -51,12 +59,9 @@ public class Wordlist {
       joinColumns = @JoinColumn(name = "wordlist_id"),
       inverseJoinColumns = @JoinColumn(name = "attribute_id")
   )
+  @ToString.Exclude
+  @Builder.Default
   private List<Attribute> attributes = new ArrayList<>();
-
-  public Wordlist(String title, String description) {
-    this.title = title;
-    this.description = description;
-  }
 
   public void addWord(Word word) {
     words.add(word);

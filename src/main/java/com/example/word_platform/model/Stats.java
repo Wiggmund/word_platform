@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "stats")
@@ -29,17 +30,21 @@ public class Stats {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @ToString.Exclude
   private User user;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")
+  @ToString.Exclude
   private Wordlist wordlist;
 
   @ManyToOne
   @JoinColumn(name = "word_id")
+  @ToString.Exclude
   private Word word;
 
   @ManyToOne
   @JoinColumn(name = "question_id")
+  @ToString.Exclude
   private Question question;
 }

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "questions")
@@ -29,17 +30,22 @@ public class Question {
   private String type;
 
   @OneToMany(mappedBy = "question")
+  @ToString.Exclude
+  @Builder.Default
   private List<Stats> statsRecords = new ArrayList<>();
 
   @ManyToOne
   @JoinColumn(name = "attribute_id")
+  @ToString.Exclude
   private Attribute answer;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")
+  @ToString.Exclude
   private Wordlist wordlist;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @ToString.Exclude
   private User user;
 }

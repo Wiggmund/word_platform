@@ -8,12 +8,14 @@ import com.example.word_platform.repository.AttributeRepo;
 import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AttributeService {
-  private static final String ATTRIBUTE_NOT_FOUND_BY_ID = "User not found by id [%s]";
+  private static final String ATTRIBUTE_NOT_FOUND_BY_ID = "Attribute not found by id [%s]";
   private static final String BASE_ATTRIBUTES_NOT_FOUND = "Base attributes [%s] don't exist";
   private static final String ILLEGAL_CREATE_NOT_BASE_TYPE =
       "Can't create attribute for types other than [base]";
@@ -38,6 +40,8 @@ public class AttributeService {
         .type(dto.type())
         .build();
 
+    System.out.println(newAttribute);
+    log.debug("New attribute was created: {}", newAttribute);
     return attributeRepo.save(newAttribute);
   }
 

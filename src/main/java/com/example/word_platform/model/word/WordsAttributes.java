@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "words-attributes")
@@ -21,11 +22,13 @@ public class WordsAttributes {
   @Id
   @ManyToOne
   @JoinColumn(name = "word_id")
+  @ToString.Exclude
   private Word word;
 
   @Id
   @ManyToOne
   @JoinColumn(name = "attribute_id")
+  @ToString.Exclude
   private Attribute attribute;
 
   private String value;

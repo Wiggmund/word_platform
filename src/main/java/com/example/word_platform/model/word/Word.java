@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "words")
@@ -34,16 +35,22 @@ public class Word {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @ToString.Exclude
   private User user;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")
+  @ToString.Exclude
   private Wordlist wordlist;
 
   @OneToMany(mappedBy = "word", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ToString.Exclude
+  @Builder.Default
   private List<WordsAttributes> attributes = new ArrayList<>();
 
   @OneToMany(mappedBy = "word")
+  @ToString.Exclude
+  @Builder.Default
   private List<Stats> statsRecords = new ArrayList<>();
 
   public WordsAttributes addAttribute(Attribute attribute, String value) {
