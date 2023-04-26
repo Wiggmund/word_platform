@@ -14,11 +14,14 @@ import com.example.word_platform.model.User;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class EntityConverter {
   public UserResponseDto entityToDto(User user) {
+    log.debug("Transforming user {} to DTO", user);
     return new UserResponseDto(
         user.getId(),
         user.getUsername(),
@@ -27,6 +30,7 @@ public class EntityConverter {
   }
 
   public WordlistResponseDto entityToDto(Wordlist wordlist) {
+    log.debug("Transforming wordlist {} to DTO", wordlist);
     return new WordlistResponseDto(
         wordlist.getId(),
         wordlist.getTitle(),
@@ -36,6 +40,7 @@ public class EntityConverter {
   }
 
   public QuestionResponseDto entityToDto(Question question) {
+    log.debug("Transforming question {} to DTO", question);
     return new QuestionResponseDto(
         question.getId(),
         question.getText(),
@@ -47,6 +52,7 @@ public class EntityConverter {
   }
 
   public AttributeResponseDto entityToDto(Attribute attribute) {
+    log.debug("Transforming attribute {} to DTO", attribute);
     return new AttributeResponseDto(
         attribute.getId(),
         attribute.getName(),
@@ -55,6 +61,7 @@ public class EntityConverter {
   }
 
   public WordResponseDto entityToDto(Word word) {
+    log.debug("Transforming word {} to DTO", word);
     List<WordsAttributesResponseDto> wordsAttributesResponseDtos = word.getAttributes().stream()
         .map(item -> {
           Attribute attribute = item.getAttribute();
@@ -79,6 +86,7 @@ public class EntityConverter {
   }
 
   public StatsResponseDto entityToDto(Stats entry) {
+    log.debug("Transforming stats {} to DTO", entry);
     Wordlist wordlist = entry.getWordlist();
     Word word = entry.getWord();
     Question question = entry.getQuestion();

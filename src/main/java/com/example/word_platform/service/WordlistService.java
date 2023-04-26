@@ -12,10 +12,12 @@ import com.example.word_platform.repository.WordlistRepo;
 import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class WordlistService {
   private static final String WORDLIST_NOT_FOUND_BY_ID = "Wordlist not found by id [%s]";
   private static final String WORDLIST_NOT_FOUND_BY_ID_AND_USER =
@@ -31,19 +33,23 @@ public class WordlistService {
   private final DuplicationCheckService duplicationCheckService;
 
   public List<Wordlist> getAllWordlists() {
+    log.debug("Getting all existed wordlists");
     return wordlistRepo.findAll();
   }
 
   public Wordlist getWordlistById(Long wordlistId) {
+    log.debug("Getting wordlist by id {}", wordlistId);
     return wordlistRepo.findById(wordlistId).orElseThrow(() ->
         new ResourceNotFoundException(String.format(WORDLIST_NOT_FOUND_BY_ID, wordlistId)));
   }
 
   public List<Wordlist> getAllWordlistsByUser(User user) {
+    log.debug("Getting all wordlists for user {}", user);
     return wordlistRepo.findAllByUser(user);
   }
 
   public Wordlist getWordlistByIdAndUser(Long wordlistId, User user) {
+    log.debug("Getting wordlist by id {} and user {}", wordlistId, user);
     return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
         new ResourceNotFoundException(String.format(
             WORDLIST_NOT_FOUND_BY_ID_AND_USER,
@@ -56,6 +62,7 @@ public class WordlistService {
       User user,
       WordlistCreateDto dto
   ) {
+    log.debug("Creating wordlist for user {}", user);
     duplicationCheckService.checkWordlistForTitle(dto.title());
 
     Wordlist newWordlist = Wordlist.builder()
@@ -64,11 +71,13 @@ public class WordlistService {
         .user(user)
         .build();
 
+    log.debug("Wordlist was created {}", newWordlist);
     return wordlistRepo.save(newWordlist);
   }
 
   public Wordlist updateWordlist(Long wordlistId, WordlistUpdateDto dto) {
     Wordlist candidate = getWordlistById(wordlistId);
+    log.debug("Updating wordlist {}", candidate);
     WordlistUpdateDto candidateDto =
         new WordlistUpdateDto(candidate.getTitle(), candidate.getDescription());
 
@@ -81,20 +90,27 @@ public class WordlistService {
     candidate.setTitle(dto.title());
     candidate.setDescription(dto.description());
 
+    log.debug("Wordlist was updated {}", candidate);
     return wordlistRepo.save(candidate);
   }
 
   public Wordlist removeWordlist(Long wordlistId) {
     Wordlist candidate = getWordlistById(wordlistId);
+
+    log.debug("Removing wordlist {}", candidate);
     wordlistRepo.delete(candidate);
+    log.debug("Wordlist was removed {}", candidate);
+
     return candidate;
   }
 
   public Wordlist save(Wordlist wordlist) {
+    log.debug("Saving wordlist {}", wordlist);
     return wordlistRepo.save(wordlist);
   }
 
   public void initializeWordlistAttributes(Wordlist wordlist, List<Attribute> attributes) {
+    log.debug("Initializing attributes {} for wordlist {}", attributes, wordlist);
     attributes.forEach(wordlist::addAttribute);
     wordlistRepo.save(wordlist);
   }
@@ -103,9 +119,11 @@ public class WordlistService {
       Wordlist wordlist,
       List<WordsAttributesCreateDto> attributesDtos
   ) {
+    log.debug("Checking if wordlist {} supports provided attributes {}", wordlist, attributesDtos);
     List<Attribute> wordlistAttributes = wordlist.getAttributes();
 
     if (wordlistAttributes.isEmpty()) {
+      log.debug("Wordlist {} doesn't have any attributes yet", wordlist);
       return;
     }
 
@@ -123,12 +141,14 @@ public class WordlistService {
           String.join(", ", unSupportedAttributes)
       ));
     }
+    log.debug("Wordlist {} supports all provided attributes {}", wordlist, attributesDtos);
   }
 
   public void checkIfAllAttributesProvided(
       Wordlist wordlist,
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos
   ) {
+    log.debug("Checking if all required attributes for wordlist {} were provided", wordlist);
     checkIfWordlistSupportAttributes(wordlist, wordsAttributesCreateDtos);
 
     List<Attribute> wordlistAttributes = wordlist.getAttributes();
@@ -136,6 +156,7 @@ public class WordlistService {
     long attributeDtosCount = wordsAttributesCreateDtos.size();
 
     if (wordlistAttributes.isEmpty()) {
+      log.debug("Wordlist {} doesn't have any attributes yet", wordlist);
       return;
     }
 
@@ -162,5 +183,6 @@ public class WordlistService {
           wordlist.getTitle()
       ));
     }
+    log.debug("All required attributes for wordlist {} were provided", wordlist);
   }
 }

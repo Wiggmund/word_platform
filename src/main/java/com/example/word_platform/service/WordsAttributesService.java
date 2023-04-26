@@ -9,14 +9,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class WordsAttributesService {
   private final WordsAttributesRepo wordsAttributesRepo;
 
   public Word updateAttributes(Word word, AttributeWithValuesDto receivedAttributesWithValues) {
+    log.debug("Updating attributes for word {}", word);
     Map<String, String> receivedAttributeNamesAndValues =
         receivedAttributesWithValues.getAttributes().entrySet().stream()
             .collect(Collectors.toMap(
@@ -24,6 +27,7 @@ public class WordsAttributesService {
                 Map.Entry::getValue
             ));
     Set<String> receivedAttributeNames = receivedAttributeNamesAndValues.keySet();
+    log.debug("Word {} attributes to update {}", word, receivedAttributeNames);
 
     List<WordsAttributes> fetchedAttributes = wordsAttributesRepo.findAllByWord(word);
     fetchedAttributes.stream()
@@ -39,14 +43,20 @@ public class WordsAttributesService {
 
     wordsAttributesRepo.saveAll(fetchedAttributes);
 
+    log.debug("Attributes for word {} were updated: {}", word, fetchedAttributes);
     return word;
   }
 
   public Word addAttributes(Word word, AttributeWithValuesDto wordAttributes) {
+    log.debug("Adding attributes to word {}", word);
+
     List<WordsAttributes> attributes = wordAttributes.getAttributes().entrySet().stream()
         .map(item -> word.addAttribute(item.getKey(), item.getValue()))
         .toList();
+
     word.setAttributes(attributes);
+    log.debug("{} attributes were added to word {}", attributes.size(), word);
+
     return word;
   }
 }

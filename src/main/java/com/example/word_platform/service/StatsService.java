@@ -12,14 +12,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StatsService {
   private final StatsRepo statsRepo;
 
   public List<Stats> getAllStatsRecordsByUser(User user) {
+    log.debug("Getting all stats for user {}", user);
     return statsRepo.findAllByUser(user);
   }
 
@@ -30,6 +33,7 @@ public class StatsService {
       List<Word> words,
       List<StatsCreateDto> dto
   ) {
+    log.debug("Creating stats for user {}", user);
     Map<Long, Question> questionsById = questions.stream().collect(Collectors.toMap(
         Question::getId,
         Function.identity()
@@ -50,6 +54,7 @@ public class StatsService {
               .build())
         .toList();
 
+    log.debug("{} stats records were created", newRecords.size());
     return statsRepo.saveAll(newRecords);
   }
 }

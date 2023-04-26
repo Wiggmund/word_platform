@@ -1,14 +1,17 @@
 package com.example.word_platform.exception;
 
 import java.time.LocalDateTime;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-  private ApiExceptionResponse buildApiExceptionResponse(Object message, HttpStatus status) {
+  private ApiExceptionResponse buildApiExceptionResponse(String message, HttpStatus status) {
+    log.debug(message);
     return new ApiExceptionResponse(
         LocalDateTime.now(),
         status.value(),
@@ -44,14 +47,6 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiExceptionResponse> handleWordlistAttributesException(
       WordlistAttributesException ex) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
-    return ResponseEntity.status(status).body(response);
-  }
-
-  @ExceptionHandler(IllegalStateException.class)
-  public ResponseEntity<ApiExceptionResponse> handleIllegalStateException(
-      IllegalStateException ex) {
-    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
     ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }

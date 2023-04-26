@@ -24,15 +24,18 @@ public class AttributeService {
   private final DuplicationCheckService duplicationCheckService;
 
   public List<Attribute> getAllAttributes() {
+    log.debug("Getting all attributes");
     return attributeRepo.findAll();
   }
 
   public Attribute getAttributeById(Long attributeId) {
+    log.debug("Getting attribute by id {}", attributeId);
     return attributeRepo.findById(attributeId).orElseThrow(() ->
         new ResourceNotFoundException(String.format(ATTRIBUTE_NOT_FOUND_BY_ID, attributeId)));
   }
 
   public Attribute createAttribute(AttributeCreateDto dto) {
+    log.debug("Creating attribute...");
     duplicationCheckService.checkAttributeForName(dto.name());
 
     Attribute newAttribute = Attribute.builder()
@@ -40,20 +43,23 @@ public class AttributeService {
         .type(dto.type())
         .build();
 
-    System.out.println(newAttribute);
-    log.debug("New attribute was created: {}", newAttribute);
+    log.debug("Attribute was created: {}", newAttribute);
     return attributeRepo.save(newAttribute);
   }
 
   public Attribute createBaseAttribute(AttributeCreateDto dto) {
+    log.debug("Creating base type attribute...");
     if (!dto.type().equalsIgnoreCase("base")) {
       throw new IllegalArgumentException(ILLEGAL_CREATE_NOT_BASE_TYPE);
     }
 
-    return createAttribute(dto);
+    Attribute createdBaseAttribute = createAttribute(dto);
+    log.debug("Base attribute was created: {}", createdBaseAttribute);
+    return createdBaseAttribute;
   }
 
   public List<Attribute> createManyAttributes(List<AttributeCreateDto> dtos) {
+    log.debug("Creating many attributes...");
     duplicationCheckService.checkAttributesForName(
         dtos.stream().map(AttributeCreateDto::name).toList()
     );
@@ -65,25 +71,27 @@ public class AttributeService {
             .build())
         .toList();
 
+    log.debug("{} new attributes was created", newAttributes.size());
     return attributeRepo.saveAll(newAttributes);
   }
 
   public List<Attribute> getAttributesFromOrCreate(
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
+    log.debug("Getting {} attributes or create if some doesn't exist", wordsAttributesCreateDtos.size());
+
     List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIn(
         wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
     );
-
-    if (fetchedAttributes.size() == wordsAttributesCreateDtos.size()) {
-      return fetchedAttributes;
-    }
+    log.debug("Fetched {} attributes", fetchedAttributes.size());
 
     if (fetchedAttributes.size() < wordsAttributesCreateDtos.size()) {
       checkBaseAttributesPresence(wordsAttributesCreateDtos, fetchedAttributes);
 
-      fetchedAttributes.addAll(
-          createCustomAttributes(wordsAttributesCreateDtos, fetchedAttributes)
-      );
+      List<Attribute> createdCustomAttributes =
+          createCustomAttributes(wordsAttributesCreateDtos, fetchedAttributes);
+
+      log.debug("Created {} custom attributes", createdCustomAttributes.size());
+      fetchedAttributes.addAll(createdCustomAttributes);
     }
 
     return fetchedAttributes;
@@ -93,6 +101,7 @@ public class AttributeService {
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
       List<Attribute> fetchedAttributes
   ) {
+    log.debug("Checking base attributes existence...");
     List<String> dtoBaseAttributeNames = wordsAttributesCreateDtos.stream()
         .filter(dto -> dto.type().equalsIgnoreCase("base"))
         .map(WordsAttributesCreateDto::name)
@@ -113,12 +122,14 @@ public class AttributeService {
           String.join(", ", nonExistentBaseAttributes)
       ));
     }
+    log.debug("All base attributes exist");
   }
 
   private List<Attribute> createCustomAttributes(
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos,
       List<Attribute> fetchedAttributes
   ) {
+    log.debug("Creating custom attributes...");
     List<WordsAttributesCreateDto> customAttributeDtos = wordsAttributesCreateDtos.stream()
         .filter(dto -> dto.type().equalsIgnoreCase("custom"))
         .toList();
