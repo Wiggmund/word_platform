@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class QuestionService {
+  private static final String QUESTION_NOT_FOUND_BY_ID = "Question not found by id [%s]";
   private final QuestionRepo questionRepo;
 
   public Question getQuestionById(Long questionId) {
     return questionRepo.findById(questionId).orElseThrow(() ->
-        new ResourceNotFoundException("Question with id [" + questionId + "] not found"));
+        new ResourceNotFoundException(String.format(QUESTION_NOT_FOUND_BY_ID, questionId)));
   }
 
   public List<Question> getAllQuestionsByIdAndWordlist(List<Long> questionIds, Wordlist wordlist) {

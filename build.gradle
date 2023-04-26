@@ -41,6 +41,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 	runtimeOnly("org.postgresql:postgresql")
 }
 

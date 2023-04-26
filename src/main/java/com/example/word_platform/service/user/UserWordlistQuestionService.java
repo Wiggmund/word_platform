@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserWordlistQuestionService {
+  private static final String WORDLIST_UNSUPPORTED_ATTRIBUTE =
+      "Wordlist [%s] doesn't support [%s] attribute";
+
   private final UserService userService;
   private final WordlistService wordlistService;
   private final AttributeService attributeService;
@@ -94,8 +97,11 @@ public class UserWordlistQuestionService {
       Attribute attribute
   ) {
     if (!wordlist.getAttributes().contains(attribute)) {
-      throw new WordlistAttributesException("Wordlist [" + wordlist.getTitle()
-          + "] doesn't support [" + attribute.getName() + "] attribute");
+      throw new WordlistAttributesException(String.format(
+          WORDLIST_UNSUPPORTED_ATTRIBUTE,
+          wordlist.getTitle(),
+          attribute.getName()
+      ));
     }
 
     duplicationCheckService.checkQuestionForUserWordlistAndAttribute(user, wordlist, attribute);

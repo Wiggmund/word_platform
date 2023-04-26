@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class AttributeService {
+  private static final String ATTRIBUTE_NOT_FOUND_BY_ID = "User not found by id [%s]";
+  private static final String BASE_ATTRIBUTES_NOT_FOUND = "Base attributes [%s] don't exist";
+  private static final String ILLEGAL_CREATE_NOT_BASE_TYPE =
+      "Can't create attribute for types other than [base]";
+
   private final AttributeRepo attributeRepo;
   private final DuplicationCheckService duplicationCheckService;
 
@@ -22,7 +27,7 @@ public class AttributeService {
 
   public Attribute getAttributeById(Long attributeId) {
     return attributeRepo.findById(attributeId).orElseThrow(() ->
-        new ResourceNotFoundException("Attribute with id [" + attributeId + "] not found"));
+        new ResourceNotFoundException(String.format(ATTRIBUTE_NOT_FOUND_BY_ID, attributeId)));
   }
 
   public Attribute createAttribute(AttributeCreateDto dto) {
@@ -33,7 +38,7 @@ public class AttributeService {
 
   public Attribute createBaseAttribute(AttributeCreateDto dto) {
     if (!dto.type().equalsIgnoreCase("base")) {
-      throw new IllegalArgumentException("Can't create attribute for types other than [base]");
+      throw new IllegalArgumentException(ILLEGAL_CREATE_NOT_BASE_TYPE);
     }
 
     return createAttribute(dto);
@@ -91,8 +96,10 @@ public class AttributeService {
         .toList();
 
     if (!nonExistentBaseAttributes.isEmpty()) {
-      throw new ResourceNotFoundException(
-          "Base attributes [" + String.join(", ", nonExistentBaseAttributes) + "] don't exist");
+      throw new ResourceNotFoundException(String.format(
+          BASE_ATTRIBUTES_NOT_FOUND,
+          String.join(", ", nonExistentBaseAttributes)
+      ));
     }
   }
 

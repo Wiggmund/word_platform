@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserWordlistWordService {
+  private static final String REDUNDANT_ATTRIBUTES =
+      "You provide redundant attributes. Wordlist require [%s] but you provide [%s]";
+
   private final UserService userService;
   private final WordlistService wordlistService;
   private final AttributeService attributeService;
@@ -93,8 +96,8 @@ public class UserWordlistWordService {
     int wordsAttributesEntriesSize = wordsAttributesEntries.size();
 
     if (attributeDtosSize > wordsAttributesEntriesSize) {
-      throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
-          + wordsAttributesEntriesSize + "] but you provide [" + attributeDtosSize + "]");
+      throw new WordlistAttributesException(
+          String.format(REDUNDANT_ATTRIBUTES, wordsAttributesEntriesSize, attributeDtosSize));
     }
 
     Map<String, String> dtoAttributeValues = dto.stream().collect(Collectors.toMap(

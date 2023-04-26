@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserService {
+  private static final String USER_NOT_FOUND_BY_ID = "User not found by id [%s]";
+
   private final UserRepo userRepo;
   private final DuplicationCheckService duplicationCheckService;
 
@@ -22,7 +24,7 @@ public class UserService {
 
   public User getUserById(Long userId) {
     return userRepo.findById(userId).orElseThrow(() ->
-        new ResourceNotFoundException("User with id [" + userId + "] not found"));
+        new ResourceNotFoundException(String.format(USER_NOT_FOUND_BY_ID, userId)));
   }
 
   public User createUser(UserCreateDto dto) {

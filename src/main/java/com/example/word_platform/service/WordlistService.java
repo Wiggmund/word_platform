@@ -17,6 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class WordlistService {
+  private static final String WORDLIST_NOT_FOUND_BY_ID = "Wordlist not found by id [%s]";
+  private static final String WORDLIST_NOT_FOUND_BY_ID_AND_USER =
+      "Wordlist not found by id [%s] for user [%s]";
+  private static final String REDUNDANT_ATTRIBUTES =
+      "You provide redundant attributes. Wordlist require [%s] but you provide [%s]";
+  private static final String UNPROVIDED_ATTRIBUTES =
+      "You  didn't provide [%s] attributes for wordlist [%s]";
+  private static final String UNSUPPORTED_ATTRIBUTES =
+      "Wordlist [%s] doesn't support next attributes: [%s]";
+
   private final WordlistRepo wordlistRepo;
   private final DuplicationCheckService duplicationCheckService;
 
@@ -26,7 +36,7 @@ public class WordlistService {
 
   public Wordlist getWordlistById(Long wordlistId) {
     return wordlistRepo.findById(wordlistId).orElseThrow(() ->
-        new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] not found"));
+        new ResourceNotFoundException(String.format(WORDLIST_NOT_FOUND_BY_ID, wordlistId)));
   }
 
   public List<Wordlist> getAllWordlistsByUser(User user) {
@@ -35,8 +45,11 @@ public class WordlistService {
 
   public Wordlist getWordlistByIdAndUser(Long wordlistId, User user) {
     return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
-        new ResourceNotFoundException("Wordlist with id [" + wordlistId + "] "
-            + "for user with id [" + user.getId() + "] not found"));
+        new ResourceNotFoundException(String.format(
+            WORDLIST_NOT_FOUND_BY_ID_AND_USER,
+            wordlistId,
+            user.getUsername()
+        )));
   }
 
   public Wordlist createWordlist(
@@ -100,8 +113,11 @@ public class WordlistService {
         .toList();
 
     if (!unSupportedAttributes.isEmpty()) {
-      throw new WordlistAttributesException("Wordlist with id [" + wordlist.getId() + "] "
-          + "doesn't support [" + String.join(", ", unSupportedAttributes) + "] attributes");
+      throw new WordlistAttributesException(String.format(
+          UNSUPPORTED_ATTRIBUTES,
+          wordlist.getTitle(),
+          String.join(", ", unSupportedAttributes)
+      ));
     }
   }
 
@@ -120,8 +136,11 @@ public class WordlistService {
     }
 
     if (attributeDtosCount > wordlistAttributesCount) {
-      throw new WordlistAttributesException("You provide redundant attributes. Wordlist require ["
-          + wordlistAttributesCount + "] but you provide [" + attributeDtosCount + "]");
+      throw new WordlistAttributesException(String.format(
+          REDUNDANT_ATTRIBUTES,
+          wordlistAttributesCount,
+          attributeDtosCount
+      ));
     }
 
     List<String> dtoAttributeNames = wordsAttributesCreateDtos.stream()
@@ -133,9 +152,11 @@ public class WordlistService {
         .toList();
 
     if (!unProvidedAttributes.isEmpty()) {
-      throw new WordlistAttributesException(
-          "You didn't provide [" + String.join(", ", unProvidedAttributes)
-              + "] attributes for wordlist with id [" + wordlist.getId() + "]");
+      throw new WordlistAttributesException(String.format(
+          UNPROVIDED_ATTRIBUTES,
+          String.join(", ", unProvidedAttributes),
+          wordlist.getTitle()
+      ));
     }
   }
 }

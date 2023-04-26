@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class WordService {
+  private static final String WORD_NOT_FOUND_BY_ID = "Word not found by id [%s]";
+
   private final WordRepo wordRepo;
   private final WordsAttributesService wordsAttributesService;
 
@@ -28,7 +30,7 @@ public class WordService {
 
   public Word getWordById(Long wordId) {
     return wordRepo.findById(wordId).orElseThrow(() ->
-        new ResourceNotFoundException("Word with id [" + wordId + "] not found"));
+        new ResourceNotFoundException(String.format(WORD_NOT_FOUND_BY_ID, wordId)));
   }
 
   public List<Word> getAllWordsByListWithAttributes(Wordlist wordlist) {

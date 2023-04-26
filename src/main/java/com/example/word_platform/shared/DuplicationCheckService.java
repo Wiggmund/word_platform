@@ -20,19 +20,25 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class DuplicationCheckService {
+  private static final String ATTRIBUTE_ALREADY_EXISTS = "Attribute [%s] already exists";
+  private static final String USER_ALREADY_EXISTS = "User [%s] with email [%s] already exists";
+  private static final String EMAIL_ALREADY_EXISTS = "Email [%s] already exists";
+  private static final String USERNAME_ALREADY_EXISTS = "Username [%s] already exists";
+  private static final String WORDLIST_ALREADY_EXISTS = "Wordlist [%s] already exists";
+  private static final String WORD_ALREADY_EXISTS = "Word [%s] with [%s] attributes already exists";
+  private static final String QUESTION_ALREADY_EXISTS =
+      "Question [%s] for [%s] attribute already exists";
+
   private final UserRepo userRepo;
   private final AttributeRepo attributeRepo;
   private final WordlistRepo wordlistRepo;
   private final WordRepo wordRepo;
   private final QuestionRepo questionRepo;
-  private static final String EXCEPTION_MSG = "already exists";
-
 
   public void checkAttributeForName(String name) {
     attributeRepo.findByName(name)
         .ifPresent(existed -> {
-          throw new ResourceAlreadyExistsException(
-              "Attribute with name [" + name + "] " + EXCEPTION_MSG);
+          throw new ResourceAlreadyExistsException(String.format(ATTRIBUTE_ALREADY_EXISTS, name));
         });
   }
 
@@ -40,8 +46,10 @@ public class DuplicationCheckService {
     List<Attribute> attributes = attributeRepo.findAllByNameIn(names);
     if (!attributes.isEmpty()) {
       List<String> attributeNames = attributes.stream().map(Attribute::getName).toList();
-      throw new ResourceAlreadyExistsException("Attribute with name ["
-          + String.join(", ", attributeNames) + "] " + EXCEPTION_MSG);
+      throw new ResourceAlreadyExistsException(String.format(
+          ATTRIBUTE_ALREADY_EXISTS,
+          String.join(", ", attributeNames)
+      ));
     }
   }
 
@@ -53,7 +61,7 @@ public class DuplicationCheckService {
       userRepo.findByUsernameOrEmail(username, email)
           .ifPresent(existed -> {
             throw new ResourceAlreadyExistsException(
-                "User with username [" + username + "] and email [" + email + "] " + EXCEPTION_MSG);
+                String.format(USER_ALREADY_EXISTS, username, email));
           });
 
       return;
@@ -63,26 +71,21 @@ public class DuplicationCheckService {
       userRepo.findByUsername(optUsername.get())
           .ifPresent(existed -> {
             throw new ResourceAlreadyExistsException(
-                "User with username [" + username + "] " + EXCEPTION_MSG);
+                String.format(USERNAME_ALREADY_EXISTS, username));
           });
 
       return;
     }
 
-    if (optEmail.isPresent()) {
-      userRepo.findByEmail(optEmail.get())
-          .ifPresent(existed -> {
-            throw new ResourceAlreadyExistsException(
-                "User with email [" + email + "] " + EXCEPTION_MSG);
-          });
-    }
+    optEmail.flatMap(userRepo::findByEmail).ifPresent(existed -> {
+      throw new ResourceAlreadyExistsException(String.format(EMAIL_ALREADY_EXISTS, email));
+    });
   }
 
   public void checkWordlistForTitle(String title) {
     wordlistRepo.findByTitle(title)
         .ifPresent(existed -> {
-          throw new ResourceAlreadyExistsException(
-              "Wordlist with title [" + title + "] " + EXCEPTION_MSG);
+          throw new ResourceAlreadyExistsException(String.format(WORDLIST_ALREADY_EXISTS, title));
         });
   }
 
@@ -117,17 +120,15 @@ public class DuplicationCheckService {
         stringBuilder.length()
     ).toString().trim();
 
-    throw new ResourceAlreadyExistsException("Word [" + wordValue + "] "
-        + "with attributes [" + duplicatedAttributes + "] " + EXCEPTION_MSG);
+    throw new ResourceAlreadyExistsException(
+        String.format(WORD_ALREADY_EXISTS, wordValue, duplicatedAttributes));
   }
 
   public void checkQuestionForUserWordlistAndAttribute(User user, Wordlist wordlist,
                                                        Attribute attribute) {
     questionRepo.findByUserAndWordlistAndAnswer(user, wordlist, attribute).ifPresent(existed -> {
-      throw new ResourceAlreadyExistsException("Question [" + existed.getText()
-          + "] for user [" + user.getUsername()
-          + "] in wordlist [" + wordlist.getTitle()
-          + "] for attribute [" + attribute.getName() + "] " + EXCEPTION_MSG);
+      throw new ResourceAlreadyExistsException(
+          String.format(QUESTION_ALREADY_EXISTS, existed.getText(), attribute.getName()));
     });
   }
 }

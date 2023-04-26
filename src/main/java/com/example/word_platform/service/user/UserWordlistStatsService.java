@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserWordlistStatsService {
+  private static final String QUESTIONS_NOT_FOUND_BY_IDS = "Questions with [%s] ids not found";
+  private static final String WORDS_NOT_FOUND_BY_IDS = "Words with [%s] ids not found";
+
   private final UserService userService;
   private final WordlistService wordlistService;
   private final StatsService statsService;
@@ -84,8 +87,10 @@ public class UserWordlistStatsService {
         .map(Object::toString)
         .toList();
 
-    throw new ResourceNotFoundException("Questions with these ids ["
-        + String.join(", ", notFoundQuestionIds) + "] not found");
+    throw new ResourceNotFoundException(String.format(
+        QUESTIONS_NOT_FOUND_BY_IDS,
+        String.join(", ", notFoundQuestionIds)
+    ));
   }
 
   private void validateWords(
@@ -103,7 +108,7 @@ public class UserWordlistStatsService {
         .map(Object::toString)
         .toList();
 
-    throw new ResourceNotFoundException("Words with these ids ["
-        + String.join(", ", notFoundWordIds) + "] not found");
+    throw new ResourceNotFoundException(
+        String.format(WORDS_NOT_FOUND_BY_IDS, String.join(", ", notFoundWordIds)));
   }
 }
