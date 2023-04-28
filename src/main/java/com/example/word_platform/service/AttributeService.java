@@ -79,7 +79,7 @@ public class AttributeService {
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
     log.debug("Getting {} attributes or create if some doesn't exist", wordsAttributesCreateDtos.size());
 
-    List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIn(
+    List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIgnoreCaseIn(
         wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
     );
     log.debug("Fetched {} attributes", fetchedAttributes.size());

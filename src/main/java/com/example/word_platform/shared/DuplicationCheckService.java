@@ -39,7 +39,7 @@ public class DuplicationCheckService {
 
   public void checkAttributeForName(String name) {
     log.debug("Looking for attribute with name: [{}]", name);
-    attributeRepo.findByName(name)
+    attributeRepo.findByNameIgnoreCase(name)
         .ifPresent(existed -> {
           throw new ResourceAlreadyExistsException(String.format(ATTRIBUTE_ALREADY_EXISTS, name));
         });
@@ -49,7 +49,7 @@ public class DuplicationCheckService {
   public void checkAttributesForName(List<String> names) {
     log.debug("Looking for attributes whose names are in the list: {}", names);
 
-    List<Attribute> attributes = attributeRepo.findAllByNameIn(names);
+    List<Attribute> attributes = attributeRepo.findAllByNameIgnoreCaseIn(names);
     if (!attributes.isEmpty()) {
       List<String> attributeNames = attributes.stream().map(Attribute::getName).toList();
       throw new ResourceAlreadyExistsException(String.format(

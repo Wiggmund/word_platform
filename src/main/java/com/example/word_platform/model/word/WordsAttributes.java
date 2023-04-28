@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
-@Table(name = "words-attributes")
+@Table(name = "words_attributes")
 @IdClass(WordsAttributesIdClass.class)
 @Data
 @NoArgsConstructor
