@@ -31,7 +31,7 @@ public class Word {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private String value;
+  private String definition;
 
   @ManyToOne
   @JoinColumn(name = "user_id")

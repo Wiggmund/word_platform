@@ -38,7 +38,7 @@ public class WordsAttributesService {
         .forEach(entry -> {
           String oldAttributeName = entry.getAttribute().getName();
           String newAttributeValue = receivedAttributeNamesAndValues.get(oldAttributeName);
-          entry.setValue(newAttributeValue);
+          entry.setText(newAttributeValue);
         });
 
     wordsAttributesRepo.saveAll(fetchedAttributes);

@@ -111,9 +111,9 @@ public class UserWordlistWordService {
                 WordsAttributes::getAttribute,
                 wordAttribute -> dtoAttributeValues.getOrDefault(
                     wordAttribute.getAttribute().getName(),
-                    wordAttribute.getValue()))));
+                    wordAttribute.getText()))));
 
-    duplicationCheckService.checkWordForAttributeValues(word.getValue(), attributesWithValues,
+    duplicationCheckService.checkWordForAttributeValues(word.getDefinition(), attributesWithValues,
         wordlist);
 
     return wordsAttributesService.updateAttributes(word, attributesWithValues);

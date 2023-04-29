@@ -5,8 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.example.word_platform.model.Attribute;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -22,26 +20,8 @@ class AttributeRepoTest {
   @Autowired
   private AttributeRepo underTest;
 
-  @BeforeEach
-  void setUp() {
-    underTest.saveAll(
-        List.of(
-            Attribute.builder()
-                .name(ATTRIBUTE_NAME_1)
-                .type(BASE_TYPE)
-                .build(),
-            Attribute.builder()
-                .name(ATTRIBUTE_NAME_2)
-                .type(CUSTOM_TYPE)
-                .build()
-        )
-    );
-  }
-
-  @AfterEach
-  void tearDown() {
-    underTest.deleteAll();
-  }
+  @Autowired
+  private WordRepo wordRepo;
 
   @Test
   void itShouldFindAttributeByName() {

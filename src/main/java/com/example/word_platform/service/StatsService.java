@@ -45,7 +45,7 @@ public class StatsService {
 
     List<Stats> newRecords = dto.stream()
         .map(item -> Stats.builder()
-              .date(item.date())
+              .testingDate(item.date())
               .correct(item.correct())
               .user(user)
               .wordlist(wordlist)

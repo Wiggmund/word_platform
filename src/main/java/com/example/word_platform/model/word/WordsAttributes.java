@@ -31,5 +31,5 @@ public class WordsAttributes {
   @ToString.Exclude
   private Attribute attribute;
 
-  private String value;
+  private String text;
 }

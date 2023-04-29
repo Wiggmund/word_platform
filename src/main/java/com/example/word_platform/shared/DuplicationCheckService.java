@@ -116,7 +116,7 @@ public class DuplicationCheckService {
         "Looking for word whose value={} and attribute values={}",
         wordValue, attributeValues
     );
-    Optional<Word> candidate = wordRepo.findByWordlistAndValueAndAttributeValues(
+    Optional<Word> candidate = wordRepo.findByWordlistAndDefinitionAndAttributeValues(
         wordValue,
         wordlist,
         attributeValues

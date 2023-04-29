@@ -56,7 +56,7 @@ public class WordService {
   ) {
     log.debug("Creating word for user {} and for wordlist {}", user, wordlist);
     Word newWord = Word.builder()
-        .value(dto.value())
+        .definition(dto.value())
         .user(user)
         .wordlist(wordlist)
         .build();
@@ -71,7 +71,7 @@ public class WordService {
     Word candidate = getWordById(wordId);
 
     log.debug("Updating word {}", candidate);
-    candidate.setValue(dto.value());
+    candidate.setDefinition(dto.value());
     log.debug("Word was updated {}", candidate);
 
     return wordRepo.save(candidate);

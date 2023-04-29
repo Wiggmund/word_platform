@@ -69,7 +69,7 @@ public class EntityConverter {
               attribute.getId(),
               attribute.getName(),
               attribute.getType(),
-              item.getValue()
+              item.getText()
           );
         })
         .toList();
@@ -78,7 +78,7 @@ public class EntityConverter {
     Wordlist wordlist = word.getWordlist();
     return new WordResponseDto(
         word.getId(),
-        word.getValue(),
+        word.getDefinition(),
         user == null ? null : user.getId(),
         wordlist == null ? null : wordlist.getId(),
         wordsAttributesResponseDtos
@@ -92,7 +92,7 @@ public class EntityConverter {
     Question question = entry.getQuestion();
     return new StatsResponseDto(
         entry.getId(),
-        entry.getDate(),
+        entry.getTestingDate(),
         entry.getCorrect(),
         entry.getUser().getId(),
         wordlist == null ? null : wordlist.getId(),

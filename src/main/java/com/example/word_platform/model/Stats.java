@@ -1,6 +1,7 @@
 package com.example.word_platform.model;
 
 import com.example.word_platform.model.word.Word;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,10 @@ public class Stats {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private LocalDate date;
+
+  @Column(name = "testing_date")
+  private LocalDate testingDate;
+
   private Boolean correct;
 
   @ManyToOne

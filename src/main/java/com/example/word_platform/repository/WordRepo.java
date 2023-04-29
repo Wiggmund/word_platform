@@ -26,15 +26,15 @@ public interface WordRepo extends JpaRepository<Word, Long> {
       + "LEFT JOIN FETCH word.attributes wordsAttrs "
       + "LEFT JOIN FETCH wordsAttrs.attribute attr "
       + "WHERE word.wordlist = :wordlist "
-      + "AND word.value = :wordValue "
+      + "AND word.definition = :definition "
       + "AND ("
       + "SELECT COUNT(wa) "
       + "FROM WordsAttributes wa "
       + "WHERE wa.word = word "
-      + "AND wa.value NOT IN :attributeValues"
+      + "AND wa.text NOT IN :attributeValues"
       + ") = 0")
-  Optional<Word> findByWordlistAndValueAndAttributeValues(
-      @Param("wordValue") String wordValue,
+  Optional<Word> findByWordlistAndDefinitionAndAttributeValues(
+      @Param("definition") String definition,
       @Param("wordlist") Wordlist wordlist,
       @Param("attributeValues") List<String> attributeValues
   );
