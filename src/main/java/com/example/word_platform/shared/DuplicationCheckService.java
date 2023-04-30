@@ -67,7 +67,7 @@ public class DuplicationCheckService {
 
     if (optUsername.isPresent() && optEmail.isPresent()) {
       log.debug("Looking for user whose username={} and email={}", username, email);
-      userRepo.findByUsernameOrEmail(username, email)
+      userRepo.findByUsernameIgnoreCaseOrEmail(username, email)
           .ifPresent(existed -> {
             throw new ResourceAlreadyExistsException(
                 String.format(USER_ALREADY_EXISTS, username, email));
@@ -79,7 +79,7 @@ public class DuplicationCheckService {
 
     if (optUsername.isPresent()) {
       log.debug("Looking for user whose username={}", username);
-      userRepo.findByUsername(optUsername.get())
+      userRepo.findByUsernameIgnoreCase(optUsername.get())
           .ifPresent(existed -> {
             throw new ResourceAlreadyExistsException(
                 String.format(USERNAME_ALREADY_EXISTS, username));
@@ -99,7 +99,7 @@ public class DuplicationCheckService {
   public void checkWordlistForTitle(String title) {
     log.debug("Looking for wordlist whose title={}", title);
 
-    wordlistRepo.findByTitle(title)
+    wordlistRepo.findByTitleIgnoreCase(title)
         .ifPresent(existed -> {
           throw new ResourceAlreadyExistsException(String.format(WORDLIST_ALREADY_EXISTS, title));
         });

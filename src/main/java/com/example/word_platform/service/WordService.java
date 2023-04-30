@@ -40,7 +40,7 @@ public class WordService {
 
   public List<Word> getAllWordsByListWithAttributes(Wordlist wordlist) {
     log.debug("Getting all words for wordlist {}", wordlist);
-    return wordRepo.findAllByListWithAttributes(wordlist);
+    return wordRepo.findAllByWordlistWithAttributes(wordlist);
   }
 
   public List<Word> getAllWordsByUser(User user) {

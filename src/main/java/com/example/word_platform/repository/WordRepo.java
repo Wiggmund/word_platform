@@ -15,7 +15,7 @@ public interface WordRepo extends JpaRepository<Word, Long> {
       + "LEFT JOIN FETCH word.attributes wordsAttrs "
       + "LEFT JOIN FETCH wordsAttrs.attribute attr "
       + "WHERE word.wordlist = :wordlist")
-  List<Word> findAllByListWithAttributes(@Param("wordlist") Wordlist wordlist);
+  List<Word> findAllByWordlistWithAttributes(@Param("wordlist") Wordlist wordlist);
 
   List<Word> findAllByUser(User user);
 

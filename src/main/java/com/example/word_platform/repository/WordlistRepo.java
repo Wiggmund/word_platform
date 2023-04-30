@@ -11,5 +11,5 @@ public interface WordlistRepo extends JpaRepository<Wordlist, Long> {
 
   Optional<Wordlist> findByIdAndUser(Long wordlistId, User user);
 
-  Optional<Wordlist> findByTitle(String title);
+  Optional<Wordlist> findByTitleIgnoreCase(String title);
 }
