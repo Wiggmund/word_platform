@@ -40,7 +40,7 @@ public class AttributeService {
 
     Attribute newAttribute = Attribute.builder()
         .name(dto.name())
-        .type(dto.type())
+        .type(dto.type().toLowerCase())
         .build();
 
     log.debug("Attribute was created: {}", newAttribute);
@@ -67,7 +67,7 @@ public class AttributeService {
     List<Attribute> newAttributes = dtos.stream()
         .map(item -> Attribute.builder()
             .name(item.name())
-            .type(item.type())
+            .type(item.type().toLowerCase())
             .build())
         .toList();
 
