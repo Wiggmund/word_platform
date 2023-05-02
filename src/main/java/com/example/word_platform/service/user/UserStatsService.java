@@ -17,4 +17,9 @@ public class UserStatsService {
     User user = userService.getUserById(userId);
     return statsService.getAllStatsRecordsByUser(user);
   }
+
+  public Stats removeStatsById(Long userId, Long statsId) {
+    userService.getUserById(userId);
+    return statsService.removeStatsById(statsId);
+  }
 }

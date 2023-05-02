@@ -44,6 +44,6 @@ public class UserWordlistService {
   public Wordlist removeUserWordlist(Long userId, Long wordlistId) {
     User user = userService.getUserById(userId);
     wordlistService.getWordlistByIdAndUser(wordlistId, user);
-    return wordlistService.removeWordlist(wordlistId);
+    return wordlistService.removeWordlistById(wordlistId);
   }
 }

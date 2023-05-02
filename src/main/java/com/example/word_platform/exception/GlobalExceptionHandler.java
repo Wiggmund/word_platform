@@ -50,4 +50,12 @@ public class GlobalExceptionHandler {
     ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
     return ResponseEntity.status(status).body(response);
   }
+
+  @ExceptionHandler(DatabaseRepositoryException.class)
+  public ResponseEntity<ApiExceptionResponse> handleDatabaseRepositoryException(
+      DatabaseRepositoryException ex) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
+    ApiExceptionResponse response = buildApiExceptionResponse(ex.getMessage(), status);
+    return ResponseEntity.status(status).body(response);
+  }
 }

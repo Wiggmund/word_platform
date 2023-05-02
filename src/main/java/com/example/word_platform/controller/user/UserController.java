@@ -58,7 +58,7 @@ public class UserController {
 
   @DeleteMapping("{userId}")
   public ResponseEntity<UserResponseDto> removeUser(@PathVariable Long userId) {
-    User removedUser = userService.removeUser(userId);
+    User removedUser = userService.removeUserById(userId);
     return ResponseEntity.ok(entityConverter.entityToDto(removedUser));
   }
 }

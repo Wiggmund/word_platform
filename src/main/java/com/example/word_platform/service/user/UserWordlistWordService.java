@@ -122,6 +122,6 @@ public class UserWordlistWordService {
   public Word removeWord(Long userId, Long wordlistId, Long wordId) {
     userService.getUserById(userId);
     wordlistService.getWordlistById(wordlistId);
-    return wordService.removeWord(wordId);
+    return wordService.removeWordById(wordId);
   }
 }

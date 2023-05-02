@@ -88,7 +88,7 @@ public class UserWordlistQuestionService {
       Long questionId
   ) {
     checkEntitiesPresence(userId, wordlistId);
-    return questionService.removeQuestion(questionId);
+    return questionService.removeQuestionById(questionId);
   }
 
   private void checkAttributeAndForDuplication(

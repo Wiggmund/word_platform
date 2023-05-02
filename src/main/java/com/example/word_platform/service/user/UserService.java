@@ -2,6 +2,7 @@ package com.example.word_platform.service.user;
 
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserUpdateDto;
+import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.User;
 import com.example.word_platform.repository.UserRepo;
@@ -9,12 +10,15 @@ import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class UserService {
+  private static final String USER_DELETING_EXCEPTION =
+      "Can't delete user cause of relationship";
   private static final String USER_NOT_FOUND_BY_ID = "User not found by id [%s]";
 
   private final UserRepo userRepo;
@@ -79,19 +83,18 @@ public class UserService {
     return userRepo.save(candidate);
   }
 
-  public User removeUser(Long userId) {
+  public User removeUserById(Long userId) {
     User candidate = getUserById(userId);
+
     log.debug("Removing user {}", candidate);
-
-    log.debug("Setting user field to null for all related wordlists");
-    candidate.getWordlists()
-        .forEach(wordlist -> wordlist.getWords().forEach(word -> word.setWordlist(null)));
-
-    log.debug("Setting user field to null for all related words");
-    candidate.getWords().forEach(word -> word.setUser(null));
-
-    userRepo.delete(candidate);
+    try {
+      userRepo.deleteById(userId);
+      userRepo.flush();
+    } catch (DataIntegrityViolationException ex) {
+      throw new DatabaseRepositoryException(USER_DELETING_EXCEPTION);
+    }
     log.debug("User was removed {}", candidate);
+
     return candidate;
   }
 }

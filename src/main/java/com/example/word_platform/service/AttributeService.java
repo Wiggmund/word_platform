@@ -2,6 +2,7 @@ package com.example.word_platform.service;
 
 import com.example.word_platform.dto.attribute.AttributeCreateDto;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
+import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.repository.AttributeRepo;
@@ -9,12 +10,15 @@ import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class AttributeService {
+  private static final String ATTRIBUTE_DELETING_EXCEPTION =
+      "Can't delete attribute cause of relationship";
   private static final String ATTRIBUTE_NOT_FOUND_BY_ID = "Attribute not found by id [%s]";
   private static final String BASE_ATTRIBUTES_NOT_FOUND = "Base attributes [%s] don't exist";
   private static final String ILLEGAL_CREATE_NOT_BASE_TYPE =
@@ -77,7 +81,8 @@ public class AttributeService {
 
   public List<Attribute> getAttributesFromOrCreate(
       List<WordsAttributesCreateDto> wordsAttributesCreateDtos) {
-    log.debug("Getting {} attributes or create if some doesn't exist", wordsAttributesCreateDtos.size());
+    log.debug("Getting {} attributes or create if some doesn't exist",
+        wordsAttributesCreateDtos.size());
 
     List<Attribute> fetchedAttributes = attributeRepo.findAllByNameIgnoreCaseIn(
         wordsAttributesCreateDtos.stream().map(WordsAttributesCreateDto::name).toList()
@@ -95,6 +100,21 @@ public class AttributeService {
     }
 
     return fetchedAttributes;
+  }
+
+  public Attribute removeAttributeById(Long attributeId) {
+    Attribute candidate = getAttributeById(attributeId);
+
+    log.debug("Removing attribute {}", candidate);
+    try {
+      attributeRepo.deleteById(attributeId);
+      attributeRepo.flush();
+    } catch (DataIntegrityViolationException ex) {
+      throw new DatabaseRepositoryException(ATTRIBUTE_DELETING_EXCEPTION);
+    }
+    log.debug("Attribute {} was removed", candidate);
+
+    return candidate;
   }
 
   private void checkBaseAttributesPresence(

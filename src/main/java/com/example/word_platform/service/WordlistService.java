@@ -3,6 +3,7 @@ package com.example.word_platform.service;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.dto.wordlist.WordlistCreateDto;
 import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
+import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
@@ -13,12 +14,15 @@ import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class WordlistService {
+  private static final String WORDLIST_DELETING_EXCEPTION =
+      "Can't delete wordlist cause of relationship";
   private static final String WORDLIST_NOT_FOUND_BY_ID = "Wordlist not found by id [%s]";
   private static final String WORDLIST_NOT_FOUND_BY_ID_AND_USER =
       "Wordlist not found by id [%s] for user [%s]";
@@ -94,11 +98,16 @@ public class WordlistService {
     return wordlistRepo.save(candidate);
   }
 
-  public Wordlist removeWordlist(Long wordlistId) {
+  public Wordlist removeWordlistById(Long wordlistId) {
     Wordlist candidate = getWordlistById(wordlistId);
 
     log.debug("Removing wordlist {}", candidate);
-    wordlistRepo.delete(candidate);
+    try {
+      wordlistRepo.deleteById(wordlistId);
+      wordlistRepo.flush();
+    } catch (DataIntegrityViolationException ex) {
+      throw new DatabaseRepositoryException(WORDLIST_DELETING_EXCEPTION);
+    }
     log.debug("Wordlist was removed {}", candidate);
 
     return candidate;
