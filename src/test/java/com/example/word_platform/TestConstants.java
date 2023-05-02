@@ -1,5 +1,7 @@
 package com.example.word_platform;
 
+import com.example.word_platform.enums.AttributeType;
+
 public class TestConstants {
   //COMMON
   public static final String NOT_EXISTING_VALUE_STRING = "undefined";
@@ -11,8 +13,8 @@ public class TestConstants {
   public static final String BASE_ATTRIBUTE_NAME_2 = "transcription";
   public static final String CUSTOM_ATTRIBUTE_NAME_1 = "context";
   public static final String CUSTOM_ATTRIBUTE_NAME_2 = "song example";
-  public static final String ATTRIBUTE_BASE_TYPE = "base";
-  public static final String ATTRIBUTE_CUSTOM_TYPE = "custom";
+  public static final AttributeType ATTRIBUTE_BASE_TYPE = AttributeType.base;
+  public static final AttributeType ATTRIBUTE_CUSTOM_TYPE = AttributeType.custom;
 
   //USER
   public static final String USER_USERNAME_1 = "Sem";

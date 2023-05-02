@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -112,19 +113,19 @@ class AttributeServiceTest {
     attributeCreateDtos = List.of(baseAttributeCreateDto, customAttributeCreateDto);
 
     onlyBaseTypes = attributes.stream()
-        .filter(item -> item.getType().equalsIgnoreCase(ATTRIBUTE_BASE_TYPE))
+        .filter(item -> item.getType().equals(ATTRIBUTE_BASE_TYPE))
         // We use toCollection() instead of toList() to get mutable list
         .collect(Collectors.toCollection(ArrayList::new));
     onlyCustomTypes = attributes.stream()
-        .filter(item -> item.getType().equalsIgnoreCase(ATTRIBUTE_CUSTOM_TYPE))
+        .filter(item -> item.getType().equals(ATTRIBUTE_CUSTOM_TYPE))
         .toList();
 
     customAttributesWithoutId = attributesWithoutId.stream()
-        .filter(item -> item.getType().equalsIgnoreCase(ATTRIBUTE_CUSTOM_TYPE))
+        .filter(item -> item.getType().equals(ATTRIBUTE_CUSTOM_TYPE))
         .toList();
 
     wordsAttributesCreateDtosCustomTypes = wordsAttributesCreateDtosAllTypes.stream()
-        .filter(item -> item.type().equalsIgnoreCase(ATTRIBUTE_CUSTOM_TYPE))
+        .filter(item -> item.type().equals(ATTRIBUTE_CUSTOM_TYPE))
         .toList();
 
     wordsAttributesCreateDtoNames = wordsAttributesCreateDtosAllTypes.stream()
@@ -196,24 +197,25 @@ class AttributeServiceTest {
     assertThat(actual).isNotNull().isEqualTo(baseAttribute);
   }
 
-  @Test
-  void createBaseAttributeIgnoringCaseForType_ShouldCreateNewBaseAttribute() {
-    //given
-    AttributeCreateDto baseAttributeCreateDtoTypeRandomCase = AttributeCreateDto.builder()
-        .name(baseAttribute.getName())
-        .type(stringToRandomCase(baseAttribute.getType()))
-        .build();
-
-    when(attributeRepo.save(baseAttributeWithoutId)).thenReturn(baseAttribute);
-
-    //when
-    Attribute actual =
-        underTest.createBaseAttribute(baseAttributeCreateDtoTypeRandomCase);
-
-    //then
-    verify(duplicationCheckService).checkAttributeForName(baseAttributeCreateDto.name());
-    assertThat(actual).isNotNull().isEqualTo(baseAttribute);
-  }
+//  @Test
+//  @Disabled
+//  void createBaseAttributeIgnoringCaseForType_ShouldCreateNewBaseAttribute() {
+//    //given
+//    AttributeCreateDto baseAttributeCreateDtoTypeRandomCase = AttributeCreateDto.builder()
+//        .name(baseAttribute.getName())
+//        .type(stringToRandomCase(baseAttribute.getType()))
+//        .build();
+//
+//    when(attributeRepo.save(baseAttributeWithoutId)).thenReturn(baseAttribute);
+//
+//    //when
+//    Attribute actual =
+//        underTest.createBaseAttribute(baseAttributeCreateDtoTypeRandomCase);
+//
+//    //then
+//    verify(duplicationCheckService).checkAttributeForName(baseAttributeCreateDto.name());
+//    assertThat(actual).isNotNull().isEqualTo(baseAttribute);
+//  }
 
   @Test
   void createBaseAttributeActuallyNotBaseType_ShouldThrowException() {

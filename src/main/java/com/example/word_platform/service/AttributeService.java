@@ -2,6 +2,7 @@ package com.example.word_platform.service;
 
 import com.example.word_platform.dto.attribute.AttributeCreateDto;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
+import com.example.word_platform.enums.AttributeType;
 import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
@@ -44,7 +45,7 @@ public class AttributeService {
 
     Attribute newAttribute = Attribute.builder()
         .name(dto.name())
-        .type(dto.type().toLowerCase())
+        .type(dto.type())
         .build();
 
     log.debug("Attribute was created: {}", newAttribute);
@@ -53,7 +54,7 @@ public class AttributeService {
 
   public Attribute createBaseAttribute(AttributeCreateDto dto) {
     log.debug("Creating base type attribute...");
-    if (!dto.type().equalsIgnoreCase("base")) {
+    if (!dto.type().equals(AttributeType.base)) {
       throw new IllegalArgumentException(ILLEGAL_CREATE_NOT_BASE_TYPE);
     }
 
@@ -71,7 +72,7 @@ public class AttributeService {
     List<Attribute> newAttributes = dtos.stream()
         .map(item -> Attribute.builder()
             .name(item.name())
-            .type(item.type().toLowerCase())
+            .type(item.type())
             .build())
         .toList();
 
@@ -123,12 +124,12 @@ public class AttributeService {
   ) {
     log.debug("Checking base attributes existence...");
     List<String> dtoBaseAttributeNames = wordsAttributesCreateDtos.stream()
-        .filter(dto -> dto.type().equalsIgnoreCase("base"))
+        .filter(dto -> dto.type().equals(AttributeType.base))
         .map(WordsAttributesCreateDto::name)
         .toList();
 
     List<String> fetchedAttributeNames = fetchedAttributes.stream()
-        .filter(attribute -> attribute.getType().equalsIgnoreCase("base"))
+        .filter(attribute -> attribute.getType().equals(AttributeType.base))
         .map(Attribute::getName)
         .toList();
 
@@ -151,11 +152,11 @@ public class AttributeService {
   ) {
     log.debug("Creating custom attributes...");
     List<WordsAttributesCreateDto> customAttributeDtos = wordsAttributesCreateDtos.stream()
-        .filter(dto -> dto.type().equalsIgnoreCase("custom"))
+        .filter(dto -> dto.type().equals(AttributeType.custom))
         .toList();
 
     List<String> customFetchedAttributeNames = fetchedAttributes.stream()
-        .filter(attribute -> attribute.getType().equalsIgnoreCase("custom"))
+        .filter(attribute -> attribute.getType().equals(AttributeType.custom))
         .map(Attribute::getName)
         .toList();
 

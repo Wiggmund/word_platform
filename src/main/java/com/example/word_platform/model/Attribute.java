@@ -1,8 +1,11 @@
 package com.example.word_platform.model;
 
+import com.example.word_platform.enums.AttributeType;
 import com.example.word_platform.model.word.WordsAttributes;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +31,9 @@ public class Attribute {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
-  private String type;
+
+  @Enumerated(EnumType.STRING)
+  private AttributeType type;
 
   @OneToMany(mappedBy = "attribute", cascade = CascadeType.ALL, orphanRemoval = true)
   @Builder.Default
