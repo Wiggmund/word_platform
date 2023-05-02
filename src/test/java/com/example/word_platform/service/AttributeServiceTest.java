@@ -8,7 +8,6 @@ import static com.example.word_platform.TestConstants.EXISTING_ID_LONG;
 import static com.example.word_platform.TestConstants.NOT_EXISTING_ID_LONG;
 import static com.example.word_platform.TestConstants.WORD_BASE_ATTRIBUTE_VALUE_1;
 import static com.example.word_platform.TestConstants.WORD_CUSTOM_ATTRIBUTE_VALUE_1;
-import static com.example.word_platform.TestUtils.stringToRandomCase;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,6 +21,7 @@ import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.repository.AttributeRepo;
+import com.example.word_platform.service.impl.AttributeServiceImpl;
 import com.example.word_platform.shared.DuplicationCheckService;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +61,7 @@ class AttributeServiceTest {
   private DuplicationCheckService duplicationCheckService;
 
   @InjectMocks
-  private AttributeService underTest;
+  private AttributeServiceImpl underTest;
 
   @BeforeEach
   void setUp() {
