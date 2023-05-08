@@ -3,7 +3,7 @@ package com.example.word_platform.shared;
 import com.example.word_platform.dto.attribute.AttributeWithValuesDto;
 import com.example.word_platform.exception.ResourceAlreadyExistsException;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.AttributeRepo;
@@ -151,19 +151,19 @@ public class DuplicationCheckService {
         String.format(WORD_ALREADY_EXISTS, wordValue, duplicatedAttributes));
   }
 
-  public void checkQuestionForUserWordlistAndAttribute(User user, Wordlist wordlist,
+  public void checkQuestionForUserWordlistAndAttribute(AppUser appUser, Wordlist wordlist,
                                                        Attribute attribute) {
     log.debug(
         "Looking for question whose user={} and wordlist={} and attribute={}",
-        user, wordlist, attribute
+        appUser, wordlist, attribute
     );
-    questionRepo.findByUserAndWordlistAndAnswer(user, wordlist, attribute).ifPresent(existed -> {
+    questionRepo.findByUserAndWordlistAndAnswer(appUser, wordlist, attribute).ifPresent(existed -> {
       throw new ResourceAlreadyExistsException(
           String.format(QUESTION_ALREADY_EXISTS, existed.getText(), attribute.getName()));
     });
     log.debug(
         "Question whose user={} and wordlist={} and attribute={} not found",
-        user, wordlist, attribute
+        appUser, wordlist, attribute
     );
   }
 }

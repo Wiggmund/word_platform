@@ -4,7 +4,7 @@ import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.dto.wordlist.WordlistCreateDto;
 import com.example.word_platform.dto.wordlist.WordlistUpdateDto;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import java.util.List;
 
@@ -13,11 +13,11 @@ public interface WordlistService {
 
   Wordlist getWordlistById(Long wordlistId);
 
-  List<Wordlist> getAllWordlistsByUser(User user);
+  List<Wordlist> getAllWordlistsByUser(AppUser appUser);
 
-  Wordlist getWordlistByIdAndUser(Long wordlistId, User user);
+  Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser appUser);
 
-  Wordlist createWordlist(User user, WordlistCreateDto dto);
+  Wordlist createWordlist(AppUser appUser, WordlistCreateDto dto);
 
   Wordlist updateWordlist(Long wordlistId, WordlistUpdateDto dto);
 

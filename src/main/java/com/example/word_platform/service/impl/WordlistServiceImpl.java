@@ -7,7 +7,7 @@ import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.repository.WordlistRepo;
 import com.example.word_platform.service.WordlistService;
@@ -48,32 +48,32 @@ public class WordlistServiceImpl implements WordlistService {
         new ResourceNotFoundException(String.format(WORDLIST_NOT_FOUND_BY_ID, wordlistId)));
   }
 
-  public List<Wordlist> getAllWordlistsByUser(User user) {
-    log.debug("Getting all wordlists for user {}", user);
-    return wordlistRepo.findAllByUser(user);
+  public List<Wordlist> getAllWordlistsByUser(AppUser appUser) {
+    log.debug("Getting all wordlists for user {}", appUser);
+    return wordlistRepo.findAllByUser(appUser);
   }
 
-  public Wordlist getWordlistByIdAndUser(Long wordlistId, User user) {
-    log.debug("Getting wordlist by id {} and user {}", wordlistId, user);
-    return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
+  public Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser appUser) {
+    log.debug("Getting wordlist by id {} and user {}", wordlistId, appUser);
+    return wordlistRepo.findByIdAndUser(wordlistId, appUser).orElseThrow(() ->
         new ResourceNotFoundException(String.format(
             WORDLIST_NOT_FOUND_BY_ID_AND_USER,
             wordlistId,
-            user.getUsername()
+            appUser.getUsername()
         )));
   }
 
   public Wordlist createWordlist(
-      User user,
+      AppUser appUser,
       WordlistCreateDto dto
   ) {
-    log.debug("Creating wordlist for user {}", user);
+    log.debug("Creating wordlist for user {}", appUser);
     duplicationCheckService.checkWordlistForTitle(dto.title());
 
     Wordlist newWordlist = Wordlist.builder()
         .title(dto.title())
         .description(dto.description())
-        .user(user)
+        .appUser(appUser)
         .build();
 
     log.debug("Wordlist was created {}", newWordlist);

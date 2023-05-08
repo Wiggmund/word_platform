@@ -4,7 +4,7 @@ import com.example.word_platform.dto.question.QuestionCreateDto;
 import com.example.word_platform.dto.question.QuestionUpdateDto;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface QuestionService {
 
   List<Question> getAllWordlistQuestions(Wordlist wordlist);
 
-  Question createQuestion(User user,
+  Question createQuestion(AppUser appUser,
                           Wordlist wordlist,
                           Attribute attribute,
                           QuestionCreateDto dto);

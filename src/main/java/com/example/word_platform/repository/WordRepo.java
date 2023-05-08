@@ -1,6 +1,6 @@
 package com.example.word_platform.repository;
 
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import java.util.List;
@@ -17,7 +17,7 @@ public interface WordRepo extends JpaRepository<Word, Long> {
       + "WHERE word.wordlist = :wordlist")
   List<Word> findAllByWordlistWithAttributes(@Param("wordlist") Wordlist wordlist);
 
-  List<Word> findAllByUser(User user);
+  List<Word> findAllByUser(AppUser appUser);
 
   List<Word> findAllByIdInAndWordlist(List<Long> wordIds, Wordlist wordlist);
 

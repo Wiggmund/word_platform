@@ -47,5 +47,5 @@ public class Question {
   @ManyToOne
   @JoinColumn(name = "user_id")
   @ToString.Exclude
-  private User user;
+  private AppUser appUser;
 }

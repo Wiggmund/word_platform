@@ -4,7 +4,7 @@ import com.example.word_platform.dto.stats.StatsCreateDto;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.service.QuestionService;
@@ -35,7 +35,7 @@ public class UserWordlistStatsServiceImpl implements UserWordlistStatsService {
       Long wordlistId,
       List<StatsCreateDto> dto
   ) {
-    User user = userService.getUserById(userId);
+    AppUser appUser = userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
 
 
@@ -63,10 +63,10 @@ public class UserWordlistStatsServiceImpl implements UserWordlistStatsService {
     validateWords(requiredWordIds, fetchedWords);
 
     List<Stats> createdRecords =
-        statsService.createStatsRecords(user, wordlist, fetchedQuestions, fetchedWords, dto);
+        statsService.createStatsRecords(appUser, wordlist, fetchedQuestions, fetchedWords, dto);
 
-    user.addStatsRecords(createdRecords);
-    userService.save(user);
+    appUser.addStatsRecords(createdRecords);
+    userService.save(appUser);
 
     wordlist.addStatsRecords(createdRecords);
     wordlistService.save(wordlist);

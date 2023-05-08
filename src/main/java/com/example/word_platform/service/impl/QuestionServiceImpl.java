@@ -6,7 +6,7 @@ import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.repository.QuestionRepo;
 import com.example.word_platform.service.QuestionService;
@@ -41,13 +41,13 @@ public class QuestionServiceImpl implements QuestionService {
     return questionRepo.findAllByWordlist(wordlist);
   }
 
-  public Question createQuestion(User user, Wordlist wordlist, Attribute attribute,
+  public Question createQuestion(AppUser appUser, Wordlist wordlist, Attribute attribute,
                                  QuestionCreateDto dto) {
     log.debug("Creating question...");
     Question newQuestion = Question.builder()
         .text(dto.text())
         .type(dto.type())
-        .user(user)
+        .appUser(appUser)
         .wordlist(wordlist)
         .answer(attribute)
         .build();

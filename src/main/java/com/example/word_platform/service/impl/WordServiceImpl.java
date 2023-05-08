@@ -5,7 +5,7 @@ import com.example.word_platform.dto.word.WordCreateDto;
 import com.example.word_platform.dto.word.WordUpdateDto;
 import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.WordRepo;
@@ -49,21 +49,21 @@ public class WordServiceImpl implements WordService {
     return wordRepo.findAllByWordlistWithAttributes(wordlist);
   }
 
-  public List<Word> getAllWordsByUser(User user) {
-    log.debug("Getting all words for user {}", user);
-    return wordRepo.findAllByUser(user);
+  public List<Word> getAllWordsByUser(AppUser appUser) {
+    log.debug("Getting all words for user {}", appUser);
+    return wordRepo.findAllByUser(appUser);
   }
 
   public Word createWord(
-      User user,
+      AppUser appUser,
       Wordlist wordlist,
       WordCreateDto dto,
       AttributeWithValuesDto wordAttributes
   ) {
-    log.debug("Creating word for user {} and for wordlist {}", user, wordlist);
+    log.debug("Creating word for user {} and for wordlist {}", appUser, wordlist);
     Word newWord = Word.builder()
         .definition(dto.value())
-        .user(user)
+        .appUser(appUser)
         .wordlist(wordlist)
         .build();
 

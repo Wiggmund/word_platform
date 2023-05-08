@@ -6,7 +6,7 @@ import com.example.word_platform.dto.word.WordUpdateDto;
 import com.example.word_platform.dto.word.WordsAttributesCreateDto;
 import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.model.word.WordsAttributes;
@@ -48,7 +48,7 @@ public class UserWordlistWordServiceImpl implements UserWordlistWordService {
       Long wordlistId,
       WordCreateDto dto
   ) {
-    User user = userService.getUserById(userId);
+    AppUser appUser = userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
     List<WordsAttributesCreateDto> attributeDtos = dto.attributes();
 
@@ -67,14 +67,14 @@ public class UserWordlistWordServiceImpl implements UserWordlistWordService {
     }
 
     Word createdWord = wordService.createWord(
-        user,
+        appUser,
         wordlist,
         dto,
         attributesWithValues
     );
-    user.addWord(createdWord);
+    appUser.addWord(createdWord);
     wordlist.addWord(createdWord);
-    userService.save(user);
+    userService.save(appUser);
     wordlistService.save(wordlist);
 
     return createdWord;

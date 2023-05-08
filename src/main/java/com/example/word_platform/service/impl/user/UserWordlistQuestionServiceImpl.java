@@ -5,7 +5,7 @@ import com.example.word_platform.dto.question.QuestionUpdateDto;
 import com.example.word_platform.exception.WordlistAttributesException;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.service.AttributeService;
 import com.example.word_platform.service.QuestionService;
@@ -30,7 +30,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
   private final DuplicationCheckService duplicationCheckService;
 
   private record EntityValidationsResult(
-      User user,
+      AppUser appUser,
       Wordlist wordlist
   ) {
   }
@@ -49,15 +49,15 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       QuestionCreateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
-    User user = entities.user();
+    AppUser appUser = entities.appUser();
     Wordlist wordlist = entities.wordlist();
     Attribute attribute = attributeService.getAttributeById(dto.attributeId());
 
-    checkAttributeAndForDuplication(user, wordlist, attribute);
+    checkAttributeAndForDuplication(appUser, wordlist, attribute);
 
-    Question createdQuestion = questionService.createQuestion(user, wordlist, attribute, dto);
-    user.addQuestion(createdQuestion);
-    userService.save(user);
+    Question createdQuestion = questionService.createQuestion(appUser, wordlist, attribute, dto);
+    appUser.addQuestion(createdQuestion);
+    userService.save(appUser);
     wordlist.addQuestion(createdQuestion);
     wordlistService.save(wordlist);
 
@@ -71,11 +71,11 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       QuestionUpdateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
-    User user = entities.user();
+    AppUser appUser = entities.appUser();
     Wordlist wordlist = entities.wordlist();
     Attribute attribute = attributeService.getAttributeById(dto.attributeId());
 
-    checkAttributeAndForDuplication(user, wordlist, attribute);
+    checkAttributeAndForDuplication(appUser, wordlist, attribute);
 
     return questionService.updateQuestion(
         questionId,
@@ -94,7 +94,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
   }
 
   private void checkAttributeAndForDuplication(
-      User user,
+      AppUser appUser,
       Wordlist wordlist,
       Attribute attribute
   ) {
@@ -106,7 +106,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       ));
     }
 
-    duplicationCheckService.checkQuestionForUserWordlistAndAttribute(user, wordlist, attribute);
+    duplicationCheckService.checkQuestionForUserWordlistAndAttribute(appUser, wordlist, attribute);
   }
 
   private EntityValidationsResult checkEntitiesPresence(

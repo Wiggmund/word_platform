@@ -3,7 +3,7 @@ package com.example.word_platform.controller.user;
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserResponseDto;
 import com.example.word_platform.dto.user.UserUpdateDto;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.service.user.UserService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
@@ -37,14 +37,15 @@ public class UserController {
 
   @GetMapping("{userId}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
-    User user = userService.getUserById(userId);
-    return ResponseEntity.ok(entityConverter.entityToDto(user));
+    AppUser appUser = userService.getUserById(userId);
+    return ResponseEntity.ok(entityConverter.entityToDto(appUser));
   }
 
   @PostMapping
   public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto) {
-    User createdUser = userService.createUser(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdUser));
+    AppUser createdAppUser = userService.createUser(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(
+        createdAppUser));
   }
 
   @PutMapping("{userId}")
@@ -52,13 +53,13 @@ public class UserController {
       @PathVariable Long userId,
       @RequestBody UserUpdateDto dto
   ) {
-    User updatedUser = userService.updateUser(userId, dto);
-    return ResponseEntity.ok(entityConverter.entityToDto(updatedUser));
+    AppUser updatedAppUser = userService.updateUser(userId, dto);
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedAppUser));
   }
 
   @DeleteMapping("{userId}")
   public ResponseEntity<UserResponseDto> removeUser(@PathVariable Long userId) {
-    User removedUser = userService.removeUserById(userId);
-    return ResponseEntity.ok(entityConverter.entityToDto(removedUser));
+    AppUser removedAppUser = userService.removeUserById(userId);
+    return ResponseEntity.ok(entityConverter.entityToDto(removedAppUser));
   }
 }

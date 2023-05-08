@@ -10,7 +10,7 @@ import static com.example.word_platform.TestUtils.stringToRandomCase;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.word_platform.TestDataVariant;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +25,8 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class WordlistRepoTest {
   private final String WORDLIST_TITLE_1_RANDOM_CASE = stringToRandomCase(WORDLIST_TITLE_1);
-  private final User user = getUser(TestDataVariant.FIRST);
-  private final User userWithoutWordlists = getUser(TestDataVariant.SECOND);
+  private final AppUser appUser = getUser(TestDataVariant.FIRST);
+  private final AppUser appUserWithoutWordlists = getUser(TestDataVariant.SECOND);
   private final Wordlist wordlist_1 = getWordlist(TestDataVariant.FIRST);
   private final Wordlist wordlist_2 = getWordlist(TestDataVariant.SECOND);
   private final List<Wordlist> wordlists = List.of(wordlist_1, wordlist_2);
@@ -39,20 +39,20 @@ class WordlistRepoTest {
   @BeforeEach
   public void setUp() {
     wordlists.forEach(item -> {
-      item.setUser(user);
+      item.setAppUser(appUser);
       entityManager.persist(item);
     });
 
-    user.setWordlists(wordlists);
-    entityManager.persist(user);
-    entityManager.persist(userWithoutWordlists);
+    appUser.setWordlists(wordlists);
+    entityManager.persist(appUser);
+    entityManager.persist(appUserWithoutWordlists);
   }
 
   @Test
   public void findAllByUser_ShouldReturnListOfUserWordlists() {
     //given
     //when
-    List<Wordlist> actual = underTest.findAllByUser(user);
+    List<Wordlist> actual = underTest.findAllByUser(appUser);
 
     //then
     assertThat(actual.isEmpty()).isFalse();
@@ -60,7 +60,7 @@ class WordlistRepoTest {
 
     assertThat(actual)
         .withFailMessage("User of fetched wordlists differs from expected")
-        .allSatisfy(item -> assertThat(item.getUser()).isEqualTo(user));
+        .allSatisfy(item -> assertThat(item.getAppUser()).isEqualTo(appUser));
 
     assertThat(actual)
         .withFailMessage("Wordlists differ from expected")
@@ -71,7 +71,7 @@ class WordlistRepoTest {
   public void findAllByUserWithoutWordlists_ShouldReturnEmptyList() {
     //given
     //when
-    List<Wordlist> actual = underTest.findAllByUser(userWithoutWordlists);
+    List<Wordlist> actual = underTest.findAllByUser(appUserWithoutWordlists);
 
     //then
     assertThat(actual.isEmpty()).isTrue();
@@ -82,7 +82,7 @@ class WordlistRepoTest {
     //given
     //when
     Optional<Wordlist> actual =
-        underTest.findByIdAndUser(EXISTING_ID_LONG, user);
+        underTest.findByIdAndUser(EXISTING_ID_LONG, appUser);
     System.out.println(underTest.findAll());
 
     //then
@@ -93,9 +93,9 @@ class WordlistRepoTest {
         .withFailMessage("Fetched wordlist id differs from expected")
         .isEqualTo(EXISTING_ID_LONG);
 
-    assertThat(actual.get().getUser())
+    assertThat(actual.get().getAppUser())
         .withFailMessage("Fetched wordlist user differs from expected")
-        .isEqualTo(user);
+        .isEqualTo(appUser);
   }
 
   @Test
@@ -103,7 +103,7 @@ class WordlistRepoTest {
     //given
     //when
     Optional<Wordlist> actual =
-        underTest.findByIdAndUser(NOT_EXISTING_ID_LONG, user);
+        underTest.findByIdAndUser(NOT_EXISTING_ID_LONG, appUser);
 
     //then
     assertThat(actual).isInstanceOf(Optional.class);
@@ -115,7 +115,7 @@ class WordlistRepoTest {
     //given
     //when
     Optional<Wordlist> actual =
-        underTest.findByIdAndUser(EXISTING_ID_LONG, userWithoutWordlists);
+        underTest.findByIdAndUser(EXISTING_ID_LONG, appUserWithoutWordlists);
 
     //then
     assertThat(actual).isInstanceOf(Optional.class);

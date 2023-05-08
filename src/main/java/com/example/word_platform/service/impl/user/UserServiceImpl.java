@@ -4,7 +4,7 @@ import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserUpdateDto;
 import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.repository.UserRepo;
 import com.example.word_platform.service.user.UserService;
 import com.example.word_platform.shared.DuplicationCheckService;
@@ -25,37 +25,37 @@ public class UserServiceImpl implements UserService {
   private final UserRepo userRepo;
   private final DuplicationCheckService duplicationCheckService;
 
-  public List<User> getAllUsers() {
+  public List<AppUser> getAllUsers() {
     log.debug("Getting all existed users");
     return userRepo.findAll();
   }
 
-  public User getUserById(Long userId) {
+  public AppUser getUserById(Long userId) {
     log.debug("Getting user by id {}", userId);
     return userRepo.findById(userId).orElseThrow(() ->
         new ResourceNotFoundException(String.format(USER_NOT_FOUND_BY_ID, userId)));
   }
 
-  public User createUser(UserCreateDto dto) {
+  public AppUser createUser(UserCreateDto dto) {
     log.debug("Creating user...");
     duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
 
-    User newUser = User.builder()
+    AppUser newAppUser = AppUser.builder()
         .username(dto.username())
         .email(dto.email())
         .build();
 
-    log.debug("User was created {}", newUser);
-    return userRepo.save(newUser);
+    log.debug("User was created {}", newAppUser);
+    return userRepo.save(newAppUser);
   }
 
-  public User save(User user) {
-    log.debug("Saving user {}", user);
-    return userRepo.save(user);
+  public AppUser save(AppUser appUser) {
+    log.debug("Saving user {}", appUser);
+    return userRepo.save(appUser);
   }
 
-  public User updateUser(Long userId, UserUpdateDto dto) {
-    User candidate = getUserById(userId);
+  public AppUser updateUser(Long userId, UserUpdateDto dto) {
+    AppUser candidate = getUserById(userId);
     log.debug("Updating user {}", candidate);
 
     boolean isUsernameTheSame = candidate.getUsername().equalsIgnoreCase(dto.username());
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
     return userRepo.save(candidate);
   }
 
-  public User removeUserById(Long userId) {
-    User candidate = getUserById(userId);
+  public AppUser removeUserById(Long userId) {
+    AppUser candidate = getUserById(userId);
 
     log.debug("Removing user {}", candidate);
     try {

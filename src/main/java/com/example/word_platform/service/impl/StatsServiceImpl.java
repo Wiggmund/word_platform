@@ -5,7 +5,7 @@ import com.example.word_platform.exception.DatabaseRepositoryException;
 import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.StatsRepo;
@@ -34,19 +34,19 @@ public class StatsServiceImpl implements StatsService {
         new ResourceNotFoundException(String.format(STATS_NOT_FOUND_BY_ID, statsId)));
   }
 
-  public List<Stats> getAllStatsRecordsByUser(User user) {
-    log.debug("Getting all stats for user {}", user);
-    return statsRepo.findAllByUser(user);
+  public List<Stats> getAllStatsRecordsByUser(AppUser appUser) {
+    log.debug("Getting all stats for user {}", appUser);
+    return statsRepo.findAllByUser(appUser);
   }
 
   public List<Stats> createStatsRecords(
-      User user,
+      AppUser appUser,
       Wordlist wordlist,
       List<Question> questions,
       List<Word> words,
       List<StatsCreateDto> dto
   ) {
-    log.debug("Creating stats for user {}", user);
+    log.debug("Creating stats for user {}", appUser);
     Map<Long, Question> questionsById = questions.stream().collect(Collectors.toMap(
         Question::getId,
         Function.identity()
@@ -60,7 +60,7 @@ public class StatsServiceImpl implements StatsService {
         .map(item -> Stats.builder()
             .testingDate(item.date())
             .correct(item.correct())
-            .user(user)
+            .appUser(appUser)
             .wordlist(wordlist)
             .word(wordsById.get(item.wordId()))
             .question(questionsById.get(item.questionId()))

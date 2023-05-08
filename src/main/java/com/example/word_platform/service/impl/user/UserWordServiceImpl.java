@@ -1,6 +1,6 @@
 package com.example.word_platform.service.impl.user;
 
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.service.WordService;
 import com.example.word_platform.service.user.UserService;
@@ -16,7 +16,7 @@ public class UserWordServiceImpl implements UserWordService {
   private final WordService wordService;
 
   public List<Word> getAllUserWords(Long userId) {
-    User user = userService.getUserById(userId);
-    return wordService.getAllWordsByUser(user);
+    AppUser appUser = userService.getUserById(userId);
+    return wordService.getAllWordsByUser(appUser);
   }
 }

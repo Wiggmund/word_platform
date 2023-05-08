@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.word_platform.TestDataVariant;
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,18 +17,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 class StatsRepoTest {
-  private final User user = getUser(TestDataVariant.FIRST);
-  private final User userWithoutStatsRecords = getUser(TestDataVariant.SECOND);
+  private final AppUser appUser = getUser(TestDataVariant.FIRST);
+  private final AppUser appUserWithoutStatsRecords = getUser(TestDataVariant.SECOND);
   private final Stats stats_1 = Stats.builder()
       .testingDate(LocalDate.now())
       .correct(STATS_CORRECT_TRUE)
-      .user(user)
+      .appUser(appUser)
       .build();
 
   private final Stats stats_2 = Stats.builder()
       .testingDate(LocalDate.now().plusDays(1))
       .correct(STATS_CORRECT_TRUE)
-      .user(user)
+      .appUser(appUser)
       .build();
 
   private final List<Stats> statsRecords = List.of(stats_1, stats_2);
@@ -40,8 +40,8 @@ class StatsRepoTest {
 
   @BeforeEach
   void setUp() {
-    entityManager.persist(user);
-    entityManager.persist(userWithoutStatsRecords);
+    entityManager.persist(appUser);
+    entityManager.persist(appUserWithoutStatsRecords);
     entityManager.persist(stats_1);
     entityManager.persist(stats_2);
   }
@@ -50,7 +50,7 @@ class StatsRepoTest {
   void findAllByUser_ShouldReturnListOfUserStatsRecords() {
     //given
     //when
-    List<Stats> actual = statsRepo.findAllByUser(user);
+    List<Stats> actual = statsRepo.findAllByUser(appUser);
 
     //then
     assertThat(actual.isEmpty()).isFalse();
@@ -58,7 +58,7 @@ class StatsRepoTest {
 
     assertThat(actual)
         .withFailMessage("Stats user differs from expected")
-        .allSatisfy(item -> assertThat(item.getUser()).isEqualTo(user));
+        .allSatisfy(item -> assertThat(item.getAppUser()).isEqualTo(appUser));
 
     assertThat(actual)
         .withFailMessage("Fetched stats records differs from expected")
@@ -69,7 +69,7 @@ class StatsRepoTest {
   void findAllByUserWithoutStats_ShouldReturnEmptyList() {
     //given
     //when
-    List<Stats> actual = statsRepo.findAllByUser(userWithoutStatsRecords);
+    List<Stats> actual = statsRepo.findAllByUser(appUserWithoutStatsRecords);
 
     //then
     assertThat(actual.isEmpty()).isTrue();

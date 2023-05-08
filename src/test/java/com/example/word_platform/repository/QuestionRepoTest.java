@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.example.word_platform.TestDataVariant;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +26,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 class QuestionRepoTest {
-  private final User user = getUser(TestDataVariant.FIRST);
+  private final AppUser appUser = getUser(TestDataVariant.FIRST);
   private final Wordlist wordlist = getWordlist(TestDataVariant.FIRST);
   private final Attribute attribute_1 = getBaseAttribute(TestDataVariant.FIRST);
   private final Attribute attribute_2 = getBaseAttribute(TestDataVariant.SECOND);
-  private final User userWithoutQuestions = getUser(TestDataVariant.SECOND);
+  private final AppUser appUserWithoutQuestions = getUser(TestDataVariant.SECOND);
   private final Wordlist wordlistWithoutQuestions = getWordlist(TestDataVariant.SECOND);
   private final Attribute notRelatedAttribute = Attribute.builder()
       .name(NOT_EXISTING_VALUE_STRING)
@@ -39,7 +39,7 @@ class QuestionRepoTest {
   private final Question question_1 = Question.builder()
       .text(QUESTION_TEXT_1)
       .type(QUESTION_TYPE_CHECKED)
-      .user(user)
+      .appUser(appUser)
       .wordlist(wordlist)
       .answer(attribute_1)
       .build();
@@ -47,7 +47,7 @@ class QuestionRepoTest {
   private final Question question_2 = Question.builder()
       .text(QUESTION_TEXT_2)
       .type(QUESTION_TYPE_CHECKED)
-      .user(user)
+      .appUser(appUser)
       .wordlist(wordlist)
       .answer(attribute_2)
       .build();
@@ -60,12 +60,12 @@ class QuestionRepoTest {
 
   @BeforeEach
   public void setUp() {
-    entityManager.persist(user);
+    entityManager.persist(appUser);
     entityManager.persist(wordlist);
     entityManager.persist(attribute_1);
     entityManager.persist(attribute_2);
 
-    entityManager.persist(userWithoutQuestions);
+    entityManager.persist(appUserWithoutQuestions);
     entityManager.persist(wordlistWithoutQuestions);
     entityManager.persist(notRelatedAttribute);
   }
@@ -77,14 +77,14 @@ class QuestionRepoTest {
 
     //when
     Optional<Question> actual =
-        underTest.findByUserAndWordlistAndAnswer(user, wordlist, attribute_1);
+        underTest.findByUserAndWordlistAndAnswer(appUser, wordlist, attribute_1);
 
     //then
     assertThat(actual.isPresent()).isTrue();
 
-    assertThat(actual.get().getUser())
+    assertThat(actual.get().getAppUser())
         .withFailMessage("User differs from expected")
-        .isEqualTo(user);
+        .isEqualTo(appUser);
 
     assertThat(actual.get().getWordlist())
         .withFailMessage("Wordlist differs from expected")
@@ -102,7 +102,7 @@ class QuestionRepoTest {
 
     //when
     Optional<Question> actual =
-        underTest.findByUserAndWordlistAndAnswer(userWithoutQuestions, wordlist, attribute_1);
+        underTest.findByUserAndWordlistAndAnswer(appUserWithoutQuestions, wordlist, attribute_1);
 
     //then
     assertThat(actual.isPresent()).isFalse();
@@ -115,7 +115,7 @@ class QuestionRepoTest {
 
     //when
     Optional<Question> actual =
-        underTest.findByUserAndWordlistAndAnswer(user, wordlistWithoutQuestions, attribute_1);
+        underTest.findByUserAndWordlistAndAnswer(appUser, wordlistWithoutQuestions, attribute_1);
 
     //then
     assertThat(actual.isPresent()).isFalse();
@@ -128,7 +128,7 @@ class QuestionRepoTest {
 
     //when
     Optional<Question> actual =
-        underTest.findByUserAndWordlistAndAnswer(user, wordlist, notRelatedAttribute);
+        underTest.findByUserAndWordlistAndAnswer(appUser, wordlist, notRelatedAttribute);
 
     //then
     assertThat(actual.isPresent()).isFalse();

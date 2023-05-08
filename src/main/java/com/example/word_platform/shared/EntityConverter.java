@@ -10,7 +10,7 @@ import com.example.word_platform.dto.wordlist.WordlistResponseDto;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import java.util.List;
@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EntityConverter {
-  public UserResponseDto entityToDto(User user) {
-    log.debug("Transforming user {} to DTO", user);
+  public UserResponseDto entityToDto(AppUser appUser) {
+    log.debug("Transforming user {} to DTO", appUser);
     return new UserResponseDto(
-        user.getId(),
-        user.getUsername(),
-        user.getEmail()
+        appUser.getId(),
+        appUser.getUsername(),
+        appUser.getEmail()
     );
   }
 
@@ -35,7 +35,7 @@ public class EntityConverter {
         wordlist.getId(),
         wordlist.getTitle(),
         wordlist.getDescription(),
-        wordlist.getUser().getId()
+        wordlist.getAppUser().getId()
     );
   }
 
@@ -47,7 +47,7 @@ public class EntityConverter {
         question.getType(),
         question.getAnswer().getId(),
         question.getWordlist().getId(),
-        question.getUser().getId()
+        question.getAppUser().getId()
     );
   }
 
@@ -74,12 +74,12 @@ public class EntityConverter {
         })
         .toList();
 
-    User user = word.getUser();
+    AppUser appUser = word.getAppUser();
     Wordlist wordlist = word.getWordlist();
     return new WordResponseDto(
         word.getId(),
         word.getDefinition(),
-        user == null ? null : user.getId(),
+        appUser == null ? null : appUser.getId(),
         wordlist == null ? null : wordlist.getId(),
         wordsAttributesResponseDtos
     );
@@ -94,7 +94,7 @@ public class EntityConverter {
         entry.getId(),
         entry.getTestingDate(),
         entry.getCorrect(),
-        entry.getUser().getId(),
+        entry.getAppUser().getId(),
         wordlist == null ? null : wordlist.getId(),
         word == null ? null : word.getId(),
         question == null ? null : question.getId()

@@ -21,26 +21,26 @@ import static com.example.word_platform.TestConstants.WORD_DEFINITION_2;
 
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import java.util.stream.Collectors;
 
 public class TestUtils {
-  public static User getUser(TestDataVariant variant) {
-    User user1 = User.builder()
+  public static AppUser getUser(TestDataVariant variant) {
+    AppUser appUser1 = AppUser.builder()
         .username(USER_USERNAME_1)
         .email(USER_EMAIL_1)
         .build();
 
-    User user2 = User.builder()
+    AppUser appUser2 = AppUser.builder()
         .username(USER_USERNAME_2)
         .email(USER_EMAIL_2)
         .build();
 
     return switch (variant) {
-      case FIRST -> user1;
-      case SECOND -> user2;
+      case FIRST -> appUser1;
+      case SECOND -> appUser2;
     };
   }
 

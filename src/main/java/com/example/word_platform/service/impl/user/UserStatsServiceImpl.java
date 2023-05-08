@@ -1,7 +1,7 @@
 package com.example.word_platform.service.impl.user;
 
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.service.StatsService;
 import com.example.word_platform.service.user.UserService;
 import com.example.word_platform.service.user.UserStatsService;
@@ -16,8 +16,8 @@ public class UserStatsServiceImpl implements UserStatsService {
   private final StatsService statsService;
 
   public List<Stats> getAllStatsRecordsByUser(Long userId) {
-    User user = userService.getUserById(userId);
-    return statsService.getAllStatsRecordsByUser(user);
+    AppUser appUser = userService.getUserById(userId);
+    return statsService.getAllStatsRecordsByUser(appUser);
   }
 
   public Stats removeStatsById(Long userId, Long statsId) {

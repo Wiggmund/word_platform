@@ -2,7 +2,7 @@ package com.example.word_platform.model.word;
 
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Stats;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -36,7 +36,7 @@ public class Word {
   @ManyToOne
   @JoinColumn(name = "user_id")
   @ToString.Exclude
-  private User user;
+  private AppUser appUser;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")

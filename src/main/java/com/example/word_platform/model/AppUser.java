@@ -22,70 +22,70 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class AppUser {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String username;
   private String email;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
   @ToString.Exclude
   @Builder.Default
   private List<Wordlist> wordlists = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "appUser")
   @ToString.Exclude
   @Builder.Default
   private List<Word> words = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "appUser")
   @ToString.Exclude
   @Builder.Default
   private List<Question> questions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "appUser")
   @ToString.Exclude
   @Builder.Default
   private List<Stats> statsRecords = new ArrayList<>();
 
   public void addWord(Word word) {
     words.add(word);
-    word.setUser(this);
+    word.setAppUser(this);
   }
 
   public void removeWord(Word word) {
     words.remove(word);
-    word.setUser(null);
+    word.setAppUser(null);
   }
 
   public void addWordlist(Wordlist wordlist) {
     wordlists.add(wordlist);
-    wordlist.setUser(this);
+    wordlist.setAppUser(this);
   }
 
   public void removeWordlist(Wordlist wordlist) {
     wordlists.remove(wordlist);
-    wordlist.setUser(null);
+    wordlist.setAppUser(null);
   }
 
   public void addQuestion(Question question) {
     questions.add(question);
-    question.setUser(this);
+    question.setAppUser(this);
   }
 
   public void removeQuestion(Question question) {
     questions.remove(question);
-    question.setUser(null);
+    question.setAppUser(null);
   }
 
   public void addStatsRecords(List<Stats> records) {
     statsRecords.addAll(records);
-    records.forEach(item -> item.setUser(this));
+    records.forEach(item -> item.setAppUser(this));
   }
 
   public void removeStatsRecords(List<Stats> records) {
     statsRecords.removeAll(records);
-    records.forEach(item -> item.setUser(null));
+    records.forEach(item -> item.setAppUser(null));
   }
 }

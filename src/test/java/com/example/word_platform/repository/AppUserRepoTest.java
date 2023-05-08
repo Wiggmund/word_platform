@@ -8,7 +8,7 @@ import static com.example.word_platform.TestUtils.stringToRandomCase;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.example.word_platform.TestDataVariant;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
-class UserRepoTest {
-  private final User user = getUser(TestDataVariant.FIRST);
+class AppUserRepoTest {
+  private final AppUser appUser = getUser(TestDataVariant.FIRST);
   private final String USER_USERNAME_1_RANDOM_CASE = stringToRandomCase(USER_USERNAME_1);
 
   @Autowired
@@ -30,63 +30,63 @@ class UserRepoTest {
 
   @BeforeEach
   void setUp() {
-    entityManager.persist(user);
+    entityManager.persist(appUser);
   }
 
   @Test
   void findByUsernameOrEmail_ShouldReturnOptionalOfUser() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCaseOrEmail(USER_USERNAME_1, USER_EMAIL_1);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByUsernameIgnoreCaseOrNotExistingEmail_ShouldReturnOptionalOfUser() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCaseOrEmail(USER_USERNAME_1_RANDOM_CASE,
             NOT_EXISTING_VALUE_STRING);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByNotExistingUsernameOrEmail_ShouldReturnOptionalOfUserWithSpecifiedEmail() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCaseOrEmail(NOT_EXISTING_VALUE_STRING, USER_EMAIL_1);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByUsernameOrNotExistingEmail_ShouldReturnOptionalOfUserWithSpecifiedUsername() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCaseOrEmail(USER_USERNAME_1, NOT_EXISTING_VALUE_STRING);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByNotExistingUsernameOrNotExistingEmail_ShouldReturnEmptyOptional() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCaseOrEmail(NOT_EXISTING_VALUE_STRING,
             NOT_EXISTING_VALUE_STRING);
 
@@ -98,19 +98,19 @@ class UserRepoTest {
   void findByUsername_ShouldReturnOptionalOfUser() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCase(USER_USERNAME_1);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByNotExistingUsername_ShouldReturnEmptyOptional() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCase(NOT_EXISTING_VALUE_STRING);
 
     //then
@@ -121,14 +121,14 @@ class UserRepoTest {
   void findByUsernameIgnoreCase_ShouldReturnOptionalOfUser() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByUsernameIgnoreCase(USER_USERNAME_1_RANDOM_CASE);
 
     //then
-    System.out.println(user.getUsername());
+    System.out.println(appUser.getUsername());
     System.out.println(USER_USERNAME_1_RANDOM_CASE);
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
 
@@ -136,19 +136,19 @@ class UserRepoTest {
   void findByEmail_ShouldReturnOptionalOfUser() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByEmail(USER_EMAIL_1);
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(user);
+    assertThat(actual.get()).isEqualTo(appUser);
   }
 
   @Test
   void findByNotExistingEmail_ShouldReturnEmptyOptional() {
     //given
     //when
-    Optional<User> actual =
+    Optional<AppUser> actual =
         underTest.findByEmail(NOT_EXISTING_VALUE_STRING);
 
     //then

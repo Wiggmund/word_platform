@@ -2,19 +2,19 @@ package com.example.word_platform.service.user;
 
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserUpdateDto;
-import com.example.word_platform.model.User;
+import com.example.word_platform.model.AppUser;
 import java.util.List;
 
 public interface UserService {
-  List<User> getAllUsers();
+  List<AppUser> getAllUsers();
 
-  User getUserById(Long userId);
+  AppUser getUserById(Long userId);
 
-  User createUser(UserCreateDto dto);
+  AppUser createUser(UserCreateDto dto);
 
-  User updateUser(Long userId, UserUpdateDto dto);
+  AppUser updateUser(Long userId, UserUpdateDto dto);
 
-  User removeUserById(Long userId);
+  AppUser removeUserById(Long userId);
 
-  User save(User user);
+  AppUser save(AppUser appUser);
 }
