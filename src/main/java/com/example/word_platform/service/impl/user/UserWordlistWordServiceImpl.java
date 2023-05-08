@@ -48,7 +48,7 @@ public class UserWordlistWordServiceImpl implements UserWordlistWordService {
       Long wordlistId,
       WordCreateDto dto
   ) {
-    AppUser appUser = userService.getUserById(userId);
+    AppUser user = userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
     List<WordsAttributesCreateDto> attributeDtos = dto.attributes();
 
@@ -67,14 +67,14 @@ public class UserWordlistWordServiceImpl implements UserWordlistWordService {
     }
 
     Word createdWord = wordService.createWord(
-        appUser,
+        user,
         wordlist,
         dto,
         attributesWithValues
     );
-    appUser.addWord(createdWord);
+    user.addWord(createdWord);
     wordlist.addWord(createdWord);
-    userService.save(appUser);
+    userService.save(user);
     wordlistService.save(wordlist);
 
     return createdWord;

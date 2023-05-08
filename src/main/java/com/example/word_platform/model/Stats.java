@@ -35,7 +35,7 @@ public class Stats {
   @ManyToOne
   @JoinColumn(name = "user_id")
   @ToString.Exclude
-  private AppUser appUser;
+  private AppUser user;
 
   @ManyToOne
   @JoinColumn(name = "wordlist_id")

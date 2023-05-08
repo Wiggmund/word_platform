@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
@@ -28,64 +31,85 @@ public class AppUser {
   private Long id;
   private String username;
   private String email;
+  private String password;
 
-  @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  @Builder.Default
+  @ToString.Exclude
+  private List<Role> roles = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   @ToString.Exclude
   @Builder.Default
   private List<Wordlist> wordlists = new ArrayList<>();
 
-  @OneToMany(mappedBy = "appUser")
+  @OneToMany(mappedBy = "user")
   @ToString.Exclude
   @Builder.Default
   private List<Word> words = new ArrayList<>();
 
-  @OneToMany(mappedBy = "appUser")
+  @OneToMany(mappedBy = "user")
   @ToString.Exclude
   @Builder.Default
   private List<Question> questions = new ArrayList<>();
 
-  @OneToMany(mappedBy = "appUser")
+  @OneToMany(mappedBy = "user")
   @ToString.Exclude
   @Builder.Default
   private List<Stats> statsRecords = new ArrayList<>();
 
   public void addWord(Word word) {
     words.add(word);
-    word.setAppUser(this);
+    word.setUser(this);
   }
 
   public void removeWord(Word word) {
     words.remove(word);
-    word.setAppUser(null);
+    word.setUser(null);
   }
 
   public void addWordlist(Wordlist wordlist) {
     wordlists.add(wordlist);
-    wordlist.setAppUser(this);
+    wordlist.setUser(this);
   }
 
   public void removeWordlist(Wordlist wordlist) {
     wordlists.remove(wordlist);
-    wordlist.setAppUser(null);
+    wordlist.setUser(null);
   }
 
   public void addQuestion(Question question) {
     questions.add(question);
-    question.setAppUser(this);
+    question.setUser(this);
   }
 
   public void removeQuestion(Question question) {
     questions.remove(question);
-    question.setAppUser(null);
+    question.setUser(null);
   }
 
   public void addStatsRecords(List<Stats> records) {
     statsRecords.addAll(records);
-    records.forEach(item -> item.setAppUser(this));
+    records.forEach(item -> item.setUser(this));
   }
 
   public void removeStatsRecords(List<Stats> records) {
     statsRecords.removeAll(records);
-    records.forEach(item -> item.setAppUser(null));
+    records.forEach(item -> item.setUser(null));
+  }
+
+  public void addRole(Role role) {
+    this.roles.add(role);
+    role.getUsers().add(this);
+  }
+
+  public void removeRole(Role role) {
+    this.roles.remove(role);
+    role.getUsers().remove(this);
   }
 }

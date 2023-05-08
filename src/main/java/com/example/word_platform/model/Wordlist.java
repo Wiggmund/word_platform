@@ -51,7 +51,7 @@ public class Wordlist {
   @ManyToOne
   @JoinColumn(name = "user_id")
   @ToString.Exclude
-  private AppUser appUser;
+  private AppUser user;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(

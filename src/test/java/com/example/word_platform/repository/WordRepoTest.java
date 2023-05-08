@@ -29,21 +29,21 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 class WordRepoTest {
-  private final AppUser appUser = getUser(TestDataVariant.FIRST);
-  private final AppUser appUserWithoutWords = getUser(TestDataVariant.SECOND);
+  private final AppUser user = getUser(TestDataVariant.FIRST);
+  private final AppUser userWithoutWords = getUser(TestDataVariant.SECOND);
   private final Wordlist wordlist = getWordlist(TestDataVariant.FIRST);
   private final Wordlist wordlistWithoutWords = getWordlist(TestDataVariant.SECOND);
   private final Attribute attribute_1 = getBaseAttribute(TestDataVariant.FIRST);
   private final Attribute attribute_2 = getCustomAttribute(TestDataVariant.FIRST);
   private final Word word_1 = Word.builder()
       .definition(WORD_DEFINITION_1)
-      .appUser(appUser)
+      .user(user)
       .wordlist(wordlist)
       .build();
 
   private final Word word_2 = Word.builder()
       .definition(WORD_DEFINITION_2)
-      .appUser(appUser)
+      .user(user)
       .wordlist(wordlist)
       .build();
   private final List<Word> words = List.of(word_1, word_2);
@@ -82,8 +82,8 @@ class WordRepoTest {
 
   @BeforeEach
   void setUp() {
-    entityManager.persist(appUser);
-    entityManager.persist(appUserWithoutWords);
+    entityManager.persist(user);
+    entityManager.persist(userWithoutWords);
     entityManager.persist(wordlist);
     entityManager.persist(wordlistWithoutWords);
 
@@ -134,7 +134,7 @@ class WordRepoTest {
   void findAllByUser_ShouldReturnListOfUserWords() {
     //given
     //when
-    List<Word> actual = underTest.findAllByUser(appUser);
+    List<Word> actual = underTest.findAllByUser(user);
 
     //then
     assertThat(actual.isEmpty()).isFalse();
@@ -142,7 +142,7 @@ class WordRepoTest {
 
     assertThat(actual)
         .withFailMessage("User of fetched words differs from expected")
-        .allSatisfy(item -> assertThat(item.getAppUser()).isEqualTo(appUser));
+        .allSatisfy(item -> assertThat(item.getUser()).isEqualTo(user));
 
     assertThat(actual)
         .withFailMessage("Fetched words differs from expected")
@@ -153,7 +153,7 @@ class WordRepoTest {
   void findAllByUserWithoutWords_ShouldReturnEmptyList() {
     //given
     //when
-    List<Word> actual = underTest.findAllByUser(appUserWithoutWords);
+    List<Word> actual = underTest.findAllByUser(userWithoutWords);
 
     //then
     assertThat(actual.isEmpty()).isTrue();

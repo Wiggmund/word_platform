@@ -151,19 +151,19 @@ public class DuplicationCheckService {
         String.format(WORD_ALREADY_EXISTS, wordValue, duplicatedAttributes));
   }
 
-  public void checkQuestionForUserWordlistAndAttribute(AppUser appUser, Wordlist wordlist,
+  public void checkQuestionForUserWordlistAndAttribute(AppUser user, Wordlist wordlist,
                                                        Attribute attribute) {
     log.debug(
         "Looking for question whose user={} and wordlist={} and attribute={}",
-        appUser, wordlist, attribute
+        user, wordlist, attribute
     );
-    questionRepo.findByUserAndWordlistAndAnswer(appUser, wordlist, attribute).ifPresent(existed -> {
+    questionRepo.findByUserAndWordlistAndAnswer(user, wordlist, attribute).ifPresent(existed -> {
       throw new ResourceAlreadyExistsException(
           String.format(QUESTION_ALREADY_EXISTS, existed.getText(), attribute.getName()));
     });
     log.debug(
         "Question whose user={} and wordlist={} and attribute={} not found",
-        appUser, wordlist, attribute
+        user, wordlist, attribute
     );
   }
 }

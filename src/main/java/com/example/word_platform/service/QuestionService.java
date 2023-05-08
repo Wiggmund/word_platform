@@ -15,7 +15,7 @@ public interface QuestionService {
 
   List<Question> getAllWordlistQuestions(Wordlist wordlist);
 
-  Question createQuestion(AppUser appUser,
+  Question createQuestion(AppUser user,
                           Wordlist wordlist,
                           Attribute attribute,
                           QuestionCreateDto dto);

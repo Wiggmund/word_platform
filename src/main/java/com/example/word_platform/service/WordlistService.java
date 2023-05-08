@@ -13,11 +13,11 @@ public interface WordlistService {
 
   Wordlist getWordlistById(Long wordlistId);
 
-  List<Wordlist> getAllWordlistsByUser(AppUser appUser);
+  List<Wordlist> getAllWordlistsByUser(AppUser user);
 
-  Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser appUser);
+  Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser user);
 
-  Wordlist createWordlist(AppUser appUser, WordlistCreateDto dto);
+  Wordlist createWordlist(AppUser user, WordlistCreateDto dto);
 
   Wordlist updateWordlist(Long wordlistId, WordlistUpdateDto dto);
 

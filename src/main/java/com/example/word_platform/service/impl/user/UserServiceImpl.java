@@ -40,18 +40,18 @@ public class UserServiceImpl implements UserService {
     log.debug("Creating user...");
     duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
 
-    AppUser newAppUser = AppUser.builder()
+    AppUser newUser = AppUser.builder()
         .username(dto.username())
         .email(dto.email())
         .build();
 
-    log.debug("User was created {}", newAppUser);
-    return userRepo.save(newAppUser);
+    log.debug("User was created {}", newUser);
+    return userRepo.save(newUser);
   }
 
-  public AppUser save(AppUser appUser) {
-    log.debug("Saving user {}", appUser);
-    return userRepo.save(appUser);
+  public AppUser save(AppUser user) {
+    log.debug("Saving user {}", user);
+    return userRepo.save(user);
   }
 
   public AppUser updateUser(Long userId, UserUpdateDto dto) {

@@ -48,32 +48,32 @@ public class WordlistServiceImpl implements WordlistService {
         new ResourceNotFoundException(String.format(WORDLIST_NOT_FOUND_BY_ID, wordlistId)));
   }
 
-  public List<Wordlist> getAllWordlistsByUser(AppUser appUser) {
-    log.debug("Getting all wordlists for user {}", appUser);
-    return wordlistRepo.findAllByUser(appUser);
+  public List<Wordlist> getAllWordlistsByUser(AppUser user) {
+    log.debug("Getting all wordlists for user {}", user);
+    return wordlistRepo.findAllByUser(user);
   }
 
-  public Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser appUser) {
-    log.debug("Getting wordlist by id {} and user {}", wordlistId, appUser);
-    return wordlistRepo.findByIdAndUser(wordlistId, appUser).orElseThrow(() ->
+  public Wordlist getWordlistByIdAndUser(Long wordlistId, AppUser user) {
+    log.debug("Getting wordlist by id {} and user {}", wordlistId, user);
+    return wordlistRepo.findByIdAndUser(wordlistId, user).orElseThrow(() ->
         new ResourceNotFoundException(String.format(
             WORDLIST_NOT_FOUND_BY_ID_AND_USER,
             wordlistId,
-            appUser.getUsername()
+            user.getUsername()
         )));
   }
 
   public Wordlist createWordlist(
-      AppUser appUser,
+      AppUser user,
       WordlistCreateDto dto
   ) {
-    log.debug("Creating wordlist for user {}", appUser);
+    log.debug("Creating wordlist for user {}", user);
     duplicationCheckService.checkWordlistForTitle(dto.title());
 
     Wordlist newWordlist = Wordlist.builder()
         .title(dto.title())
         .description(dto.description())
-        .appUser(appUser)
+        .user(user)
         .build();
 
     log.debug("Wordlist was created {}", newWordlist);

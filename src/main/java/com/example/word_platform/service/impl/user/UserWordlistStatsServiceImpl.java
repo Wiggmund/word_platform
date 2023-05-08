@@ -35,7 +35,7 @@ public class UserWordlistStatsServiceImpl implements UserWordlistStatsService {
       Long wordlistId,
       List<StatsCreateDto> dto
   ) {
-    AppUser appUser = userService.getUserById(userId);
+    AppUser user = userService.getUserById(userId);
     Wordlist wordlist = wordlistService.getWordlistById(wordlistId);
 
 
@@ -63,10 +63,10 @@ public class UserWordlistStatsServiceImpl implements UserWordlistStatsService {
     validateWords(requiredWordIds, fetchedWords);
 
     List<Stats> createdRecords =
-        statsService.createStatsRecords(appUser, wordlist, fetchedQuestions, fetchedWords, dto);
+        statsService.createStatsRecords(user, wordlist, fetchedQuestions, fetchedWords, dto);
 
-    appUser.addStatsRecords(createdRecords);
-    userService.save(appUser);
+    user.addStatsRecords(createdRecords);
+    userService.save(user);
 
     wordlist.addStatsRecords(createdRecords);
     wordlistService.save(wordlist);

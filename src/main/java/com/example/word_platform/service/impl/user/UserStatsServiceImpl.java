@@ -16,8 +16,8 @@ public class UserStatsServiceImpl implements UserStatsService {
   private final StatsService statsService;
 
   public List<Stats> getAllStatsRecordsByUser(Long userId) {
-    AppUser appUser = userService.getUserById(userId);
-    return statsService.getAllStatsRecordsByUser(appUser);
+    AppUser user = userService.getUserById(userId);
+    return statsService.getAllStatsRecordsByUser(user);
   }
 
   public Stats removeStatsById(Long userId, Long statsId) {

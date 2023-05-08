@@ -20,12 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class EntityConverter {
-  public UserResponseDto entityToDto(AppUser appUser) {
-    log.debug("Transforming user {} to DTO", appUser);
+  public UserResponseDto entityToDto(AppUser user) {
+    log.debug("Transforming user {} to DTO", user);
     return new UserResponseDto(
-        appUser.getId(),
-        appUser.getUsername(),
-        appUser.getEmail()
+        user.getId(),
+        user.getUsername(),
+        user.getEmail()
     );
   }
 
@@ -35,7 +35,7 @@ public class EntityConverter {
         wordlist.getId(),
         wordlist.getTitle(),
         wordlist.getDescription(),
-        wordlist.getAppUser().getId()
+        wordlist.getUser().getId()
     );
   }
 
@@ -47,7 +47,7 @@ public class EntityConverter {
         question.getType(),
         question.getAnswer().getId(),
         question.getWordlist().getId(),
-        question.getAppUser().getId()
+        question.getUser().getId()
     );
   }
 
@@ -74,12 +74,12 @@ public class EntityConverter {
         })
         .toList();
 
-    AppUser appUser = word.getAppUser();
+    AppUser user = word.getUser();
     Wordlist wordlist = word.getWordlist();
     return new WordResponseDto(
         word.getId(),
         word.getDefinition(),
-        appUser == null ? null : appUser.getId(),
+        user == null ? null : user.getId(),
         wordlist == null ? null : wordlist.getId(),
         wordsAttributesResponseDtos
     );
@@ -94,7 +94,7 @@ public class EntityConverter {
         entry.getId(),
         entry.getTestingDate(),
         entry.getCorrect(),
-        entry.getAppUser().getId(),
+        entry.getUser().getId(),
         wordlist == null ? null : wordlist.getId(),
         word == null ? null : word.getId(),
         question == null ? null : question.getId()

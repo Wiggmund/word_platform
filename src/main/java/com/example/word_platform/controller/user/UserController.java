@@ -37,15 +37,15 @@ public class UserController {
 
   @GetMapping("{userId}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long userId) {
-    AppUser appUser = userService.getUserById(userId);
-    return ResponseEntity.ok(entityConverter.entityToDto(appUser));
+    AppUser user = userService.getUserById(userId);
+    return ResponseEntity.ok(entityConverter.entityToDto(user));
   }
 
   @PostMapping
   public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto) {
-    AppUser createdAppUser = userService.createUser(dto);
+    AppUser createdUser = userService.createUser(dto);
     return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(
-        createdAppUser));
+        createdUser));
   }
 
   @PutMapping("{userId}")
@@ -53,13 +53,13 @@ public class UserController {
       @PathVariable Long userId,
       @RequestBody UserUpdateDto dto
   ) {
-    AppUser updatedAppUser = userService.updateUser(userId, dto);
-    return ResponseEntity.ok(entityConverter.entityToDto(updatedAppUser));
+    AppUser updatedUser = userService.updateUser(userId, dto);
+    return ResponseEntity.ok(entityConverter.entityToDto(updatedUser));
   }
 
   @DeleteMapping("{userId}")
   public ResponseEntity<UserResponseDto> removeUser(@PathVariable Long userId) {
-    AppUser removedAppUser = userService.removeUserById(userId);
-    return ResponseEntity.ok(entityConverter.entityToDto(removedAppUser));
+    AppUser removedUser = userService.removeUserById(userId);
+    return ResponseEntity.ok(entityConverter.entityToDto(removedUser));
   }
 }

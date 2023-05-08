@@ -11,9 +11,9 @@ import java.util.List;
 public interface StatsService {
   Stats getStatsById(Long statsId);
 
-  List<Stats> getAllStatsRecordsByUser(AppUser appUser);
+  List<Stats> getAllStatsRecordsByUser(AppUser user);
 
-  List<Stats> createStatsRecords(AppUser appUser,
+  List<Stats> createStatsRecords(AppUser user,
                                  Wordlist wordlist,
                                  List<Question> questions,
                                  List<Word> words,

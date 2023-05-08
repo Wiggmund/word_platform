@@ -49,21 +49,21 @@ public class WordServiceImpl implements WordService {
     return wordRepo.findAllByWordlistWithAttributes(wordlist);
   }
 
-  public List<Word> getAllWordsByUser(AppUser appUser) {
-    log.debug("Getting all words for user {}", appUser);
-    return wordRepo.findAllByUser(appUser);
+  public List<Word> getAllWordsByUser(AppUser user) {
+    log.debug("Getting all words for user {}", user);
+    return wordRepo.findAllByUser(user);
   }
 
   public Word createWord(
-      AppUser appUser,
+      AppUser user,
       Wordlist wordlist,
       WordCreateDto dto,
       AttributeWithValuesDto wordAttributes
   ) {
-    log.debug("Creating word for user {} and for wordlist {}", appUser, wordlist);
+    log.debug("Creating word for user {} and for wordlist {}", user, wordlist);
     Word newWord = Word.builder()
         .definition(dto.value())
-        .appUser(appUser)
+        .user(user)
         .wordlist(wordlist)
         .build();
 

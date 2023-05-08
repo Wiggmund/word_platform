@@ -16,5 +16,5 @@ public interface UserService {
 
   AppUser removeUserById(Long userId);
 
-  AppUser save(AppUser appUser);
+  AppUser save(AppUser user);
 }

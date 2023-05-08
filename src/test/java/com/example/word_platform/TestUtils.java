@@ -28,19 +28,19 @@ import java.util.stream.Collectors;
 
 public class TestUtils {
   public static AppUser getUser(TestDataVariant variant) {
-    AppUser appUser1 = AppUser.builder()
+    AppUser user1 = AppUser.builder()
         .username(USER_USERNAME_1)
         .email(USER_EMAIL_1)
         .build();
 
-    AppUser appUser2 = AppUser.builder()
+    AppUser user2 = AppUser.builder()
         .username(USER_USERNAME_2)
         .email(USER_EMAIL_2)
         .build();
 
     return switch (variant) {
-      case FIRST -> appUser1;
-      case SECOND -> appUser2;
+      case FIRST -> user1;
+      case SECOND -> user2;
     };
   }
 

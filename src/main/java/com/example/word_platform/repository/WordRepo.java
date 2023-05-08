@@ -17,7 +17,7 @@ public interface WordRepo extends JpaRepository<Word, Long> {
       + "WHERE word.wordlist = :wordlist")
   List<Word> findAllByWordlistWithAttributes(@Param("wordlist") Wordlist wordlist);
 
-  List<Word> findAllByUser(AppUser appUser);
+  List<Word> findAllByUser(AppUser user);
 
   List<Word> findAllByIdInAndWordlist(List<Long> wordIds, Wordlist wordlist);
 

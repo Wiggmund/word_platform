@@ -16,7 +16,7 @@ public class UserWordServiceImpl implements UserWordService {
   private final WordService wordService;
 
   public List<Word> getAllUserWords(Long userId) {
-    AppUser appUser = userService.getUserById(userId);
-    return wordService.getAllWordsByUser(appUser);
+    AppUser user = userService.getUserById(userId);
+    return wordService.getAllWordsByUser(user);
   }
 }

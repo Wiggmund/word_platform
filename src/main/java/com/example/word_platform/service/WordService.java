@@ -17,9 +17,9 @@ public interface WordService {
 
   List<Word> getAllWordsByListWithAttributes(Wordlist wordlist);
 
-  List<Word> getAllWordsByUser(AppUser appUser);
+  List<Word> getAllWordsByUser(AppUser user);
 
-  Word createWord(AppUser appUser,
+  Word createWord(AppUser user,
                   Wordlist wordlist,
                   WordCreateDto dto,
                   AttributeWithValuesDto wordAttributes);

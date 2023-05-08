@@ -6,5 +6,5 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StatsRepo extends JpaRepository<Stats, Long> {
-  List<Stats> findAllByUser(AppUser appUser);
+  List<Stats> findAllByUser(AppUser user);
 }

@@ -34,19 +34,19 @@ public class StatsServiceImpl implements StatsService {
         new ResourceNotFoundException(String.format(STATS_NOT_FOUND_BY_ID, statsId)));
   }
 
-  public List<Stats> getAllStatsRecordsByUser(AppUser appUser) {
-    log.debug("Getting all stats for user {}", appUser);
-    return statsRepo.findAllByUser(appUser);
+  public List<Stats> getAllStatsRecordsByUser(AppUser user) {
+    log.debug("Getting all stats for user {}", user);
+    return statsRepo.findAllByUser(user);
   }
 
   public List<Stats> createStatsRecords(
-      AppUser appUser,
+      AppUser user,
       Wordlist wordlist,
       List<Question> questions,
       List<Word> words,
       List<StatsCreateDto> dto
   ) {
-    log.debug("Creating stats for user {}", appUser);
+    log.debug("Creating stats for user {}", user);
     Map<Long, Question> questionsById = questions.stream().collect(Collectors.toMap(
         Question::getId,
         Function.identity()
@@ -60,7 +60,7 @@ public class StatsServiceImpl implements StatsService {
         .map(item -> Stats.builder()
             .testingDate(item.date())
             .correct(item.correct())
-            .appUser(appUser)
+            .user(user)
             .wordlist(wordlist)
             .word(wordsById.get(item.wordId()))
             .question(questionsById.get(item.questionId()))

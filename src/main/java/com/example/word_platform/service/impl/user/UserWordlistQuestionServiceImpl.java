@@ -30,7 +30,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
   private final DuplicationCheckService duplicationCheckService;
 
   private record EntityValidationsResult(
-      AppUser appUser,
+      AppUser user,
       Wordlist wordlist
   ) {
   }
@@ -49,15 +49,15 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       QuestionCreateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
-    AppUser appUser = entities.appUser();
+    AppUser user = entities.user();
     Wordlist wordlist = entities.wordlist();
     Attribute attribute = attributeService.getAttributeById(dto.attributeId());
 
-    checkAttributeAndForDuplication(appUser, wordlist, attribute);
+    checkAttributeAndForDuplication(user, wordlist, attribute);
 
-    Question createdQuestion = questionService.createQuestion(appUser, wordlist, attribute, dto);
-    appUser.addQuestion(createdQuestion);
-    userService.save(appUser);
+    Question createdQuestion = questionService.createQuestion(user, wordlist, attribute, dto);
+    user.addQuestion(createdQuestion);
+    userService.save(user);
     wordlist.addQuestion(createdQuestion);
     wordlistService.save(wordlist);
 
@@ -71,11 +71,11 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       QuestionUpdateDto dto
   ) {
     EntityValidationsResult entities = checkEntitiesPresence(userId, wordlistId);
-    AppUser appUser = entities.appUser();
+    AppUser user = entities.user();
     Wordlist wordlist = entities.wordlist();
     Attribute attribute = attributeService.getAttributeById(dto.attributeId());
 
-    checkAttributeAndForDuplication(appUser, wordlist, attribute);
+    checkAttributeAndForDuplication(user, wordlist, attribute);
 
     return questionService.updateQuestion(
         questionId,
@@ -94,7 +94,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
   }
 
   private void checkAttributeAndForDuplication(
-      AppUser appUser,
+      AppUser user,
       Wordlist wordlist,
       Attribute attribute
   ) {
@@ -106,7 +106,7 @@ public class UserWordlistQuestionServiceImpl implements UserWordlistQuestionServ
       ));
     }
 
-    duplicationCheckService.checkQuestionForUserWordlistAndAttribute(appUser, wordlist, attribute);
+    duplicationCheckService.checkQuestionForUserWordlistAndAttribute(user, wordlist, attribute);
   }
 
   private EntityValidationsResult checkEntitiesPresence(

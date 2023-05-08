@@ -17,18 +17,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 class StatsRepoTest {
-  private final AppUser appUser = getUser(TestDataVariant.FIRST);
-  private final AppUser appUserWithoutStatsRecords = getUser(TestDataVariant.SECOND);
+  private final AppUser user = getUser(TestDataVariant.FIRST);
+  private final AppUser userWithoutStatsRecords = getUser(TestDataVariant.SECOND);
   private final Stats stats_1 = Stats.builder()
       .testingDate(LocalDate.now())
       .correct(STATS_CORRECT_TRUE)
-      .appUser(appUser)
+      .user(user)
       .build();
 
   private final Stats stats_2 = Stats.builder()
       .testingDate(LocalDate.now().plusDays(1))
       .correct(STATS_CORRECT_TRUE)
-      .appUser(appUser)
+      .user(user)
       .build();
 
   private final List<Stats> statsRecords = List.of(stats_1, stats_2);
@@ -40,8 +40,8 @@ class StatsRepoTest {
 
   @BeforeEach
   void setUp() {
-    entityManager.persist(appUser);
-    entityManager.persist(appUserWithoutStatsRecords);
+    entityManager.persist(user);
+    entityManager.persist(userWithoutStatsRecords);
     entityManager.persist(stats_1);
     entityManager.persist(stats_2);
   }
@@ -50,7 +50,7 @@ class StatsRepoTest {
   void findAllByUser_ShouldReturnListOfUserStatsRecords() {
     //given
     //when
-    List<Stats> actual = statsRepo.findAllByUser(appUser);
+    List<Stats> actual = statsRepo.findAllByUser(user);
 
     //then
     assertThat(actual.isEmpty()).isFalse();
@@ -58,7 +58,7 @@ class StatsRepoTest {
 
     assertThat(actual)
         .withFailMessage("Stats user differs from expected")
-        .allSatisfy(item -> assertThat(item.getAppUser()).isEqualTo(appUser));
+        .allSatisfy(item -> assertThat(item.getUser()).isEqualTo(user));
 
     assertThat(actual)
         .withFailMessage("Fetched stats records differs from expected")
@@ -69,7 +69,7 @@ class StatsRepoTest {
   void findAllByUserWithoutStats_ShouldReturnEmptyList() {
     //given
     //when
-    List<Stats> actual = statsRepo.findAllByUser(appUserWithoutStatsRecords);
+    List<Stats> actual = statsRepo.findAllByUser(userWithoutStatsRecords);
 
     //then
     assertThat(actual.isEmpty()).isTrue();

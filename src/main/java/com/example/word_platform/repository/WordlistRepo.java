@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WordlistRepo extends JpaRepository<Wordlist, Long> {
-  List<Wordlist> findAllByUser(AppUser appUser);
+  List<Wordlist> findAllByUser(AppUser user);
 
-  Optional<Wordlist> findByIdAndUser(Long wordlistId, AppUser appUser);
+  Optional<Wordlist> findByIdAndUser(Long wordlistId, AppUser user);
 
   Optional<Wordlist> findByTitleIgnoreCase(String title);
 }

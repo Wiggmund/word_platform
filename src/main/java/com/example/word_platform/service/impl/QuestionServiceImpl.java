@@ -41,13 +41,13 @@ public class QuestionServiceImpl implements QuestionService {
     return questionRepo.findAllByWordlist(wordlist);
   }
 
-  public Question createQuestion(AppUser appUser, Wordlist wordlist, Attribute attribute,
+  public Question createQuestion(AppUser user, Wordlist wordlist, Attribute attribute,
                                  QuestionCreateDto dto) {
     log.debug("Creating question...");
     Question newQuestion = Question.builder()
         .text(dto.text())
         .type(dto.type())
-        .appUser(appUser)
+        .user(user)
         .wordlist(wordlist)
         .answer(attribute)
         .build();

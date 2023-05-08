@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuestionRepo extends JpaRepository<Question, Long> {
-  Optional<Question> findByUserAndWordlistAndAnswer(AppUser appUser, Wordlist wordlist,
+  Optional<Question> findByUserAndWordlistAndAnswer(AppUser user, Wordlist wordlist,
                                                     Attribute attribute);
 
   List<Question> findAllByWordlist(Wordlist wordlist);

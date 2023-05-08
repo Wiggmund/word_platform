@@ -18,8 +18,8 @@ public class UserWordlistServiceImpl implements UserWordlistService {
   private final WordlistService wordlistService;
 
   public List<Wordlist> getAllUserWordlists(Long userId) {
-    AppUser appUser = userService.getUserById(userId);
-    return wordlistService.getAllWordlistsByUser(appUser);
+    AppUser user = userService.getUserById(userId);
+    return wordlistService.getAllWordlistsByUser(user);
   }
 
   public Wordlist getUserWordlistById(Long userId, Long wordlistId) {
@@ -28,24 +28,24 @@ public class UserWordlistServiceImpl implements UserWordlistService {
   }
 
   public Wordlist createUserWorldlist(Long userId, WordlistCreateDto dto) {
-    AppUser appUser = userService.getUserById(userId);
+    AppUser user = userService.getUserById(userId);
 
-    Wordlist newWordlist = wordlistService.createWordlist(appUser, dto);
-    appUser.addWordlist(newWordlist);
-    userService.save(appUser);
+    Wordlist newWordlist = wordlistService.createWordlist(user, dto);
+    user.addWordlist(newWordlist);
+    userService.save(user);
 
     return newWordlist;
   }
 
   public Wordlist updateUserWordlist(Long userId, Long wordlistId, WordlistUpdateDto dto) {
-    AppUser appUser = userService.getUserById(userId);
-    wordlistService.getWordlistByIdAndUser(wordlistId, appUser);
+    AppUser user = userService.getUserById(userId);
+    wordlistService.getWordlistByIdAndUser(wordlistId, user);
     return wordlistService.updateWordlist(wordlistId, dto);
   }
 
   public Wordlist removeUserWordlist(Long userId, Long wordlistId) {
-    AppUser appUser = userService.getUserById(userId);
-    wordlistService.getWordlistByIdAndUser(wordlistId, appUser);
+    AppUser user = userService.getUserById(userId);
+    wordlistService.getWordlistByIdAndUser(wordlistId, user);
     return wordlistService.removeWordlistById(wordlistId);
   }
 }

@@ -18,7 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
 class AppUserRepoTest {
-  private final AppUser appUser = getUser(TestDataVariant.FIRST);
+  private final AppUser user = getUser(TestDataVariant.FIRST);
   private final String USER_USERNAME_1_RANDOM_CASE = stringToRandomCase(USER_USERNAME_1);
 
   @Autowired
@@ -30,7 +30,7 @@ class AppUserRepoTest {
 
   @BeforeEach
   void setUp() {
-    entityManager.persist(appUser);
+    entityManager.persist(user);
   }
 
   @Test
@@ -42,7 +42,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
@@ -55,7 +55,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
@@ -67,7 +67,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
@@ -79,7 +79,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
@@ -103,7 +103,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
@@ -125,10 +125,10 @@ class AppUserRepoTest {
         underTest.findByUsernameIgnoreCase(USER_USERNAME_1_RANDOM_CASE);
 
     //then
-    System.out.println(appUser.getUsername());
+    System.out.println(user.getUsername());
     System.out.println(USER_USERNAME_1_RANDOM_CASE);
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
 
@@ -141,7 +141,7 @@ class AppUserRepoTest {
 
     //then
     assertThat(actual.isPresent()).isTrue();
-    assertThat(actual.get()).isEqualTo(appUser);
+    assertThat(actual.get()).isEqualTo(user);
   }
 
   @Test
