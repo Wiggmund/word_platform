@@ -39,6 +39,8 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'org.flywaydb:flyway-core:9.16.3'
 	runtimeOnly("org.postgresql:postgresql")
