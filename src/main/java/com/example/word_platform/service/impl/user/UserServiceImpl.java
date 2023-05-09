@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
   private static final String USER_DELETING_EXCEPTION =
       "Can't delete user cause of relationship";
   private static final String USER_NOT_FOUND_BY_ID = "User not found by id [%s]";
+  private static final String USER_NOT_FOUND_BY_USERNAME = "User not found by username [%s]";
 
   private final UserRepo userRepo;
   private final DuplicationCheckService duplicationCheckService;
@@ -36,6 +38,13 @@ public class UserServiceImpl implements UserService {
         new ResourceNotFoundException(String.format(USER_NOT_FOUND_BY_ID, userId)));
   }
 
+  @Override
+  public AppUser getUserByUsername(String username) {
+    log.debug("Getting user by username {}", username);
+    return userRepo.findByUsernameIgnoreCase(username).orElseThrow(() ->
+        new UsernameNotFoundException(String.format(USER_NOT_FOUND_BY_USERNAME, username)));
+  }
+
   public AppUser createUser(UserCreateDto dto) {
     log.debug("Creating user...");
     duplicationCheckService.checkUserForUsernameAndEmail(dto.username(), dto.email());
@@ -43,6 +52,7 @@ public class UserServiceImpl implements UserService {
     AppUser newUser = AppUser.builder()
         .username(dto.username())
         .email(dto.email())
+        .password(dto.password())
         .build();
 
     log.debug("User was created {}", newUser);

@@ -8,6 +8,7 @@ import com.example.word_platform.model.Wordlist;
 import com.example.word_platform.model.word.Word;
 import com.example.word_platform.repository.AttributeRepo;
 import com.example.word_platform.repository.QuestionRepo;
+import com.example.word_platform.repository.RoleRepo;
 import com.example.word_platform.repository.UserRepo;
 import com.example.word_platform.repository.WordRepo;
 import com.example.word_platform.repository.WordlistRepo;
@@ -28,6 +29,7 @@ public class DuplicationCheckService {
   private static final String USERNAME_ALREADY_EXISTS = "Username [%s] already exists";
   private static final String WORDLIST_ALREADY_EXISTS = "Wordlist [%s] already exists";
   private static final String WORD_ALREADY_EXISTS = "Word [%s] with [%s] attributes already exists";
+  private static final String ROLE_ALREADY_EXISTS = "Role [%s] already exists";
   private static final String QUESTION_ALREADY_EXISTS =
       "Question [%s] for [%s] attribute already exists";
 
@@ -36,6 +38,7 @@ public class DuplicationCheckService {
   private final WordlistRepo wordlistRepo;
   private final WordRepo wordRepo;
   private final QuestionRepo questionRepo;
+  private final RoleRepo roleRepo;
 
   public void checkAttributeForName(String name) {
     log.debug("Looking for attribute with name: [{}]", name);
@@ -165,5 +168,15 @@ public class DuplicationCheckService {
         "Question whose user={} and wordlist={} and attribute={} not found",
         user, wordlist, attribute
     );
+  }
+
+  public void checkRoleForName(String name) {
+    log.debug("Looking for role whose name={}", name);
+
+    roleRepo.findByNameIgnoreCase(name).ifPresent(existed -> {
+      throw new ResourceAlreadyExistsException(String.format(ROLE_ALREADY_EXISTS, name));
+    });
+
+    log.debug("Role whose name={} not found", name);
   }
 }

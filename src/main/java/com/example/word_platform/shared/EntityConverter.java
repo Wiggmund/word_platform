@@ -2,6 +2,7 @@ package com.example.word_platform.shared;
 
 import com.example.word_platform.dto.attribute.AttributeResponseDto;
 import com.example.word_platform.dto.question.QuestionResponseDto;
+import com.example.word_platform.dto.role.RoleResponseDto;
 import com.example.word_platform.dto.stats.StatsResponseDto;
 import com.example.word_platform.dto.user.UserResponseDto;
 import com.example.word_platform.dto.word.WordResponseDto;
@@ -25,7 +26,13 @@ public class EntityConverter {
     return new UserResponseDto(
         user.getId(),
         user.getUsername(),
-        user.getEmail()
+        user.getEmail(),
+        user.getRoles().stream()
+            .map(item -> RoleResponseDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .build())
+            .toList()
     );
   }
 

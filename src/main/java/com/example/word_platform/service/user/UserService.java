@@ -10,6 +10,8 @@ public interface UserService {
 
   AppUser getUserById(Long userId);
 
+  AppUser getUserByUsername(String username);
+
   AppUser createUser(UserCreateDto dto);
 
   AppUser updateUser(Long userId, UserUpdateDto dto);

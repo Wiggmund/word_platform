@@ -3,9 +3,7 @@ package com.example.word_platform.dto.user;
 import lombok.Builder;
 
 @Builder
-public record UserCreateDto(
+public record UserLoginDto(
     String username,
-    String email,
     String password
-) {
-}
+) {}
