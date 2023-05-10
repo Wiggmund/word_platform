@@ -1,6 +1,9 @@
 package com.example.word_platform.controller.auth;
 
-import com.example.word_platform.dto.auth.AuthenticationResponse;
+import com.example.word_platform.dto.auth.RefreshTokenRequest;
+import com.example.word_platform.dto.auth.RefreshTokenResponse;
+import com.example.word_platform.dto.auth.SuccessLogin;
+import com.example.word_platform.dto.auth.SuccessRegistration;
 import com.example.word_platform.dto.user.UserCreateDto;
 import com.example.word_platform.dto.user.UserLoginDto;
 import com.example.word_platform.service.AuthenticationService;
@@ -16,15 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
   private final AuthenticationService authenticationService;
+
   @PostMapping("/register")
-  public ResponseEntity<AuthenticationResponse> register(
+  public ResponseEntity<SuccessRegistration> register(
       @RequestBody UserCreateDto dto
   ) {
     return ResponseEntity.ok(authenticationService.register(dto));
   }
 
   @PostMapping("/authenticate")
-  public ResponseEntity<AuthenticationResponse> authenticate(
+  public ResponseEntity<SuccessLogin> authenticate(
       @RequestBody UserLoginDto dto
   ) {
     return ResponseEntity.ok(authenticationService.authenticate(dto));

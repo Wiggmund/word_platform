@@ -10,6 +10,7 @@ import com.example.word_platform.dto.word.WordsAttributesResponseDto;
 import com.example.word_platform.dto.wordlist.WordlistResponseDto;
 import com.example.word_platform.model.Attribute;
 import com.example.word_platform.model.Question;
+import com.example.word_platform.model.Role;
 import com.example.word_platform.model.Stats;
 import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.Wordlist;
@@ -27,13 +28,17 @@ public class EntityConverter {
         user.getId(),
         user.getUsername(),
         user.getEmail(),
-        user.getRoles().stream()
-            .map(item -> RoleResponseDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .build())
-            .toList()
+        entityToDto(user.getRoles())
     );
+  }
+
+  public List<RoleResponseDto> entityToDto(List<Role> roles) {
+    return roles.stream()
+        .map(item -> RoleResponseDto.builder()
+            .id(item.getId())
+            .name(item.getName())
+            .build())
+        .toList();
   }
 
   public WordlistResponseDto entityToDto(Wordlist wordlist) {

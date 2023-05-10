@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,10 @@ public class AppUser implements UserDetails {
   private String username;
   private String email;
   private String password;
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+  @ToString.Exclude
+  private RefreshToken refreshToken;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(

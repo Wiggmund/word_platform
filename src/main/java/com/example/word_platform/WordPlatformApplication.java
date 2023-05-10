@@ -1,6 +1,7 @@
 package com.example.word_platform;
 
 import com.example.word_platform.dto.user.UserCreateDto;
+import com.example.word_platform.repository.RefreshTokenRepo;
 import com.example.word_platform.repository.UserRepo;
 import com.example.word_platform.service.user.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -18,12 +19,14 @@ public class WordPlatformApplication {
   @Bean
   public CommandLineRunner run(
       UserService userService,
-      UserRepo userRepo
+      UserRepo userRepo,
+      RefreshTokenRepo refreshTokenRepo
   ) {
     return args -> {
+      refreshTokenRepo.deleteAll();
+      refreshTokenRepo.flush();
       userRepo.deleteAll();
       userRepo.flush();
-//      userService.createUser(new UserCreateDto("Sem", "sem@gmail.com"));
     };
   }
 }
