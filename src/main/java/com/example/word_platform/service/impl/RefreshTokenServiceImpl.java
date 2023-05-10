@@ -1,8 +1,6 @@
 package com.example.word_platform.service.impl;
 
-import com.example.word_platform.dto.auth.RefreshTokenRequest;
 import com.example.word_platform.dto.auth.RefreshTokenResponse;
-import com.example.word_platform.exception.ResourceNotFoundException;
 import com.example.word_platform.exception.UserAuthenticationException;
 import com.example.word_platform.model.AppUser;
 import com.example.word_platform.model.RefreshToken;
@@ -47,8 +45,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   }
 
   @Override
-  public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest dto) {
-    String oldRefreshToken = dto.refreshToken();
+  public RefreshTokenResponse refreshAccessToken(String oldRefreshToken) {
     log.debug("Refreshing access token using refresh token {}", oldRefreshToken);
     validateRefreshToken(oldRefreshToken);
 
@@ -66,6 +63,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         .accessToken(accessToken)
         .refreshToken(newRefreshToken)
         .build();
+  }
+
+  @Override
+  public void revokeRefreshToken(String refreshToken) {
+    validateRefreshToken(refreshToken);
+    RefreshToken currentRefreshToken = getRefreshTokenEntity(refreshToken);
+    currentRefreshToken.revoke();
+    refreshTokenRepo.delete(currentRefreshToken);
   }
 
   private RefreshToken getRefreshTokenEntity(String refreshToken) {

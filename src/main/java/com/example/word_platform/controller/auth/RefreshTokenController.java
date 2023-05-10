@@ -17,7 +17,14 @@ public class RefreshTokenController {
   private final RefreshTokenService refreshTokenService;
 
   @PostMapping("/refresh")
-  public ResponseEntity<RefreshTokenResponse> refresh(@RequestBody RefreshTokenRequest dto) {
-    return ResponseEntity.ok(refreshTokenService.refreshAccessToken(dto));
+  public ResponseEntity<RefreshTokenResponse> refresh(
+      @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    return ResponseEntity.ok(
+        refreshTokenService.refreshAccessToken(refreshTokenRequest.refreshToken()));
+  }
+
+  @PostMapping("/revoke")
+  public void revoke(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    refreshTokenService.revokeRefreshToken(refreshTokenRequest.refreshToken());
   }
 }

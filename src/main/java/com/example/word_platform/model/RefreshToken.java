@@ -2,8 +2,6 @@ package com.example.word_platform.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -29,4 +27,9 @@ public class RefreshToken {
   @OneToOne
   @ToString.Exclude
   private AppUser user;
+
+  public void revoke() {
+    user.setRefreshToken(null);
+    setUser(null);
+  }
 }
