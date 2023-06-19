@@ -8,6 +8,8 @@ import com.example.word_platform.model.word.Word;
 import com.example.word_platform.service.user.UserWordlistWordService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,7 @@ public class UserWordlistWordController {
   public ResponseEntity<WordResponseDto> createAndAddWord(
       @PathVariable Long userId,
       @PathVariable Long wordlistId,
-      @RequestBody WordCreateDto dto
+      @Valid @RequestBody WordCreateDto dto
   ) {
     Word createdWord = userWordlistWordService.createAndAddWord(userId, wordlistId, dto);
     return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(createdWord));
@@ -54,7 +56,7 @@ public class UserWordlistWordController {
       @PathVariable Long userId,
       @PathVariable Long wordlistId,
       @PathVariable Long wordId,
-      @RequestBody WordUpdateDto dto
+      @Valid @RequestBody WordUpdateDto dto
   ) {
     Word updatedWord = userWordlistWordService.updateWord(userId, wordlistId, wordId, dto);
     return ResponseEntity.ok(entityConverter.entityToDto(updatedWord));

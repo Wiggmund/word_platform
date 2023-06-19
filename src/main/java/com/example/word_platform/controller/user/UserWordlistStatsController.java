@@ -5,6 +5,8 @@ import com.example.word_platform.dto.stats.StatsResponseDto;
 import com.example.word_platform.service.user.UserWordlistStatsService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class UserWordlistStatsController {
   public ResponseEntity<List<StatsResponseDto>> createStatsRecords(
       @PathVariable Long userId,
       @PathVariable Long wordlistId,
-      @RequestBody List<StatsCreateDto> dto
+      @Valid @RequestBody List<StatsCreateDto> dto
   ) {
     List<StatsResponseDto> createdRecords =
         userWordlistStatsService.createStatsRecords(userId, wordlistId, dto)

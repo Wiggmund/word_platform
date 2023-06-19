@@ -7,6 +7,8 @@ import com.example.word_platform.model.Question;
 import com.example.word_platform.service.user.UserWordlistQuestionService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +45,7 @@ public class UserWordlistQuestionController {
   public ResponseEntity<QuestionResponseDto> createQuestion(
       @PathVariable Long userId,
       @PathVariable Long wordlistId,
-      @RequestBody QuestionCreateDto dto
+      @Valid @RequestBody QuestionCreateDto dto
   ) {
     Question createdQuestion = userWordlistQuestionService.createQuestion(userId, wordlistId, dto);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -55,7 +57,7 @@ public class UserWordlistQuestionController {
       @PathVariable Long userId,
       @PathVariable Long wordlistId,
       @PathVariable Long questionId,
-      @RequestBody QuestionUpdateDto dto
+      @Valid @RequestBody QuestionUpdateDto dto
   ) {
     Question updatedQuestion =
         userWordlistQuestionService.updateQuestion(userId, wordlistId, questionId, dto);

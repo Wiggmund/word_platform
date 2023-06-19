@@ -7,6 +7,8 @@ import com.example.word_platform.model.AppUser;
 import com.example.word_platform.service.user.UserService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,17 +43,10 @@ public class UserController {
     return ResponseEntity.ok(entityConverter.entityToDto(user));
   }
 
-  @PostMapping
-  public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto) {
-    AppUser createdUser = userService.createUser(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(entityConverter.entityToDto(
-        createdUser));
-  }
-
   @PutMapping("{userId}")
   public ResponseEntity<UserResponseDto> updateUser(
       @PathVariable Long userId,
-      @RequestBody UserUpdateDto dto
+      @Valid @RequestBody UserUpdateDto dto
   ) {
     AppUser updatedUser = userService.updateUser(userId, dto);
     return ResponseEntity.ok(entityConverter.entityToDto(updatedUser));

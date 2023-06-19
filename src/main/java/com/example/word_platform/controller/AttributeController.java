@@ -6,6 +6,8 @@ import com.example.word_platform.model.Attribute;
 import com.example.word_platform.service.AttributeService;
 import com.example.word_platform.shared.EntityConverter;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class AttributeController {
 
   @PostMapping("/base")
   public ResponseEntity<AttributeResponseDto> createBaseAttribute(
-      @RequestBody AttributeCreateDto dto) {
+      @Valid @RequestBody AttributeCreateDto dto) {
     Attribute createdBaseAttribute = attributeService.createBaseAttribute(dto);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(entityConverter.entityToDto(createdBaseAttribute));
